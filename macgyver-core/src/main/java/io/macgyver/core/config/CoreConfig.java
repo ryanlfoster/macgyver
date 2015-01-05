@@ -32,6 +32,8 @@ import io.macgyver.core.cluster.ClusterManager;
 import io.macgyver.core.crypto.Crypto;
 import io.macgyver.core.eventbus.EventBusPostProcessor;
 import io.macgyver.core.eventbus.MacGyverEventBus;
+import io.macgyver.core.incident.IncidentManager;
+import io.macgyver.core.incident.IncidentManagerImpl;
 import io.macgyver.core.resource.provider.filesystem.FileSystemResourceProvider;
 import io.macgyver.core.script.BindingSupplierManager;
 import io.macgyver.core.script.ExtensionResourceProvider;
@@ -288,5 +290,10 @@ public class CoreConfig implements EnvironmentAware {
 	@Bean
 	public ClusterManager macClusterManager() {
 		return new ClusterManager();
+	}
+	
+	@Bean
+	public IncidentManager macIncidentManager() {
+		return new IncidentManagerImpl();
 	}
 }
