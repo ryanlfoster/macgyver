@@ -1,5 +1,7 @@
 package io.macgyver.core.rest;
 
+import io.macgyver.core.MacGyverException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -58,7 +60,7 @@ public class UrlBuilder {
 
 			return sb.toString();
 		} catch (UnsupportedEncodingException e) {
-			throw new RestException(e);
+			throw new MacGyverException(e);
 		}
 	}
 
@@ -116,7 +118,7 @@ public class UrlBuilder {
 
 			return url;
 		} catch (UnsupportedEncodingException e) {
-			throw new RestException(e);
+			throw new MacGyverException(e);
 		}
 
 	}
