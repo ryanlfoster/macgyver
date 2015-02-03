@@ -1,21 +1,13 @@
 package io.macgyver.plugin.atlassian.jira;
 
-import io.macgyver.core.service.BasicServiceFactory;
-import io.macgyver.core.service.ServiceDefinition;
+import io.macgyver.core.rest.RetrofitServiceFactory;
 
-public class JiraServiceFactory extends BasicServiceFactory<JiraClient>{
+
+public class JiraServiceFactory extends RetrofitServiceFactory<JiraClient>{
 
 	public JiraServiceFactory() {
-		super("jira");
+		super("jira",JiraClient.class.getName());
 	
-	}
-
-	@Override
-	protected Object doCreateInstance(ServiceDefinition def) {
-		
-		JiraClientImpl ci = new JiraClientImpl(def.getProperties().getProperty("url","http://jira.example.com"),def.getProperties().getProperty("username"),def.getProperties().getProperty("password"));
-
-		return ci;
 	}
 
 }
