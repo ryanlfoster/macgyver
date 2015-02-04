@@ -12,7 +12,9 @@ To Build and Test:
 ## Changes
 
 ### 0.84.0
-* fix #109 - Auto-refresh VIJava ServiceInstance sessions
+* #109 - Auto-refresh VIJava ServiceInstance sessions
+* #111 - add basic JIRA integration
+* add support for Retrofit
 
 ### 0.81.1
 * CertChecker can match hostnames on wildcard cert
