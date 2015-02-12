@@ -13,6 +13,8 @@
  */
 package io.macgyver.core.config;
 
+import io.macgyver.core.web.handlebars.DummyHandlebarsController;
+import io.macgyver.core.web.handlebars.MacGyverHandlebarsViewResolver;
 import io.macgyver.core.web.mvc.CoreApiController;
 import io.macgyver.core.web.mvc.HomeController;
 import io.macgyver.core.web.mvc.MacgyverWeb;
@@ -38,8 +40,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
 import com.vaadin.navigator.View;
 
 @Configuration
@@ -115,4 +119,18 @@ public class WebConfig implements EnvironmentAware {
 		return new AdminPlugin();
 	}
 	
+	
+	@Bean
+	public ViewResolver macHandlebarsViewResolver() {
+		
+		HandlebarsViewResolver r = new MacGyverHandlebarsViewResolver();
+		
+		return r;
+
+	}
+	
+	@Bean
+	public DummyHandlebarsController macDummyHandlebarsController() {
+		return new DummyHandlebarsController();
+	}
 }
