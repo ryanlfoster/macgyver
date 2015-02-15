@@ -18,8 +18,6 @@ import io.macgyver.core.scheduler.ScheduleScanner;
 import java.io.File;
 import java.io.IOException;
 
-import javax.json.JsonObject;
-
 import org.junit.Assert;
 import org.junit.Test;
 

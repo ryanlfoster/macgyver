@@ -15,22 +15,23 @@ package io.macgyver.core.crypto;
 
 import io.macgyver.test.MacGyverIntegrationTest;
 
-import java.io.StringReader;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStoreException;
-
-import javax.json.Json;
-import javax.json.JsonObject;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
 
 public class CryptoTest extends MacGyverIntegrationTest {
 
+	ObjectMapper mapper = new ObjectMapper();
+	
 	@Autowired
 	Crypto crypto;
 
@@ -65,17 +66,16 @@ public class CryptoTest extends MacGyverIntegrationTest {
 
 	@Test
 	public void testEncrypt() throws GeneralSecurityException,
-			UnsupportedEncodingException {
+			UnsupportedEncodingException, IOException {
 		Assert.assertNotNull(crypto);
 		String encodedEnvelope = crypto.encryptString("test", "mac0");
 		String envelope = new String(BaseEncoding.base64().decode(
 				encodedEnvelope), "UTF-8");
 
-		JsonObject obj = Json.createReader(new StringReader(envelope))
-				.readObject();
+		JsonNode obj = mapper.readTree(envelope);
 
-		Assert.assertEquals("mac0", obj.getString("k"));
-		Assert.assertTrue(obj.getString("d").length() > 10);
+		Assert.assertEquals("mac0", obj.get("k").asText());
+		Assert.assertTrue(obj.get("d").asText().length() > 10);
 		
 		Assert.assertEquals("test",crypto.decryptString(encodedEnvelope));
 
@@ -83,14 +83,15 @@ public class CryptoTest extends MacGyverIntegrationTest {
 
 	@Test(expected = GeneralSecurityException.class)
 	public void testFailedDecrypt1() throws GeneralSecurityException {
-		String x = Json.createObjectBuilder().add("k", "x").add("d", "x")
-				.build().toString();
+		String x = mapper.createObjectNode().put("k", "x").put("d","x").toString();
+		
+		
 		crypto.decryptString(x);
 	}
 
 	@Test(expected = GeneralSecurityException.class)
 	public void testFailedDecrypt2() throws GeneralSecurityException {
-		String x = Json.createObjectBuilder().add("k", "x").build().toString();
+		String x = mapper.createObjectNode().put("k", "x").toString();
 		crypto.decryptString(x);
 	}
 
@@ -101,7 +102,7 @@ public class CryptoTest extends MacGyverIntegrationTest {
 
 		// Even something that looks like an encrypted envelope should be passed
 		// through on failure
-		x = Json.createObjectBuilder().add("k", "x").add("d", "x").build()
+		x = mapper.createObjectNode().put("k", "x").put("d", "x")
 				.toString();
 		Assert.assertEquals(x, crypto.decryptStringWithPassThrough(x));
 	}

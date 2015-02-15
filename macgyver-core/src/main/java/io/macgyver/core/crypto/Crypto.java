@@ -33,12 +33,13 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.json.Json;
-import javax.json.JsonObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -51,7 +52,9 @@ public class Crypto {
 	public static Crypto instance;
 
 	KeyStoreManager keyStoreManager = new KeyStoreManager();
-
+	
+	ObjectMapper mapper = new ObjectMapper();
+	
 	public KeyStoreManager getKeyStoreManager() {
 		return keyStoreManager;
 	}
@@ -144,16 +147,17 @@ public class Crypto {
 	 * @param input
 	 * @return
 	 */
-	Optional<JsonObject> decodeEnvelope(String input) {
+	Optional<JsonNode> decodeEnvelope(String input) {
 
 		try {
 			input = new String(BaseEncoding.base64().decode(input), "UTF-8");
 			if (input == null || input.length() < 2 || input.charAt(0) != '{') {
 				return Optional.absent();
 			}
-			JsonObject obj = Json.createReader(new StringReader(input))
-					.readObject();
-			if (obj.containsKey("d") && obj.containsKey("k")) {
+			JsonNode obj = mapper.readTree(input);
+			
+			
+			if (obj.has("d") && obj.has("k")) {
 				return Optional.of(obj);
 			} else {
 				return Optional.absent();
@@ -166,15 +170,15 @@ public class Crypto {
 
 	public String decryptString(String input) throws GeneralSecurityException {
 
-		Optional<JsonObject> envelope = decodeEnvelope(input);
+		Optional<JsonNode> envelope = decodeEnvelope(input);
 		if (envelope.isPresent()) {
-			String keyAlias = envelope.get().getString("k");
+			String keyAlias = envelope.get().get("k").asText();
 			logger.debug("decrypting with alias: {}",keyAlias);
 			SecretKey key = (SecretKey) keyStoreManager.getKey(keyAlias);
 			if (key==null) {
 				throw new KeyStoreException("could not load key: "+keyAlias);
 			}
-			return decryptString(envelope.get().getString("d"), key);
+			return decryptString(envelope.get().get("d").asText(), key);
 		}
 		throw new GeneralSecurityException("could not decrypt");
 
@@ -214,9 +218,9 @@ public class Crypto {
 			cos.close();
 
 			String encoded = BaseEncoding.base64().encode(baos.toByteArray());
-			String encodedEnvelope = BaseEncoding.base64().encode(
-					Json.createObjectBuilder().add("k", alias)
-							.add("d", encoded).build().toString()
+			
+			ObjectNode n = mapper.createObjectNode().put("k",alias).put("d", encoded);
+			String encodedEnvelope = BaseEncoding.base64().encode(n.toString()
 							.getBytes("UTF-8"));
 			return encodedEnvelope;
 

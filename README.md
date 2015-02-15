@@ -6,42 +6,10 @@
 
 To Build and Test:
 
-./gradlew test
-
+```bash
+./gradlew clean check
+```
 
 ## Changes
 
-### 0.84.0
-* #109 - Auto-refresh VIJava ServiceInstance sessions
-* #111 - add basic JIRA integration
-* add support for Retrofit
-
-### 0.81.1
-* CertChecker can match hostnames on wildcard cert
-
-### 0.81.0
-* Add CertChecker
-
-### 0.80.2
-* Fix broken AppInstance checkIn
-
-### 0.80.1
-* NeoRx related fixes
-
-### 0.80.0
-* Switched to NeoRx
-
-### 0.76.0
-* Added AssertJ for fluent unit test assertions
-* Refactor of Leftronic client to add flexibility
-
-### 0.75.0
-* Fixed dependency conflicts with bouncycastle 
-
-### 0.74.0
-* Upgraded SSHJ to 0.10.0
-* Better configuration of SSH authentication
-
-
-
-
+[Change Log](CHANGELOG.md)

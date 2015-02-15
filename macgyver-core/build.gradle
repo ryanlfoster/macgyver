@@ -26,20 +26,20 @@ dependencies {
     compile "io.macgyver.neorx:neorx:${NEORX_VERSION}"
 
     compile "com.google.guava:guava:${GUAVA_VERSION}"
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.code.gson:gson:2.3.1'
+    
     compile "org.springframework:spring-context-support:${SPRING_VERSION}"
     compile "org.springframework:spring-tx:${SPRING_VERSION}"
     
-    compile 'org.ocpsoft.prettytime:prettytime:3.2.5.Final'
-    compile 'joda-time:joda-time:2.3'
+    compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
+    compile 'joda-time:joda-time:2.7'
     
     compile 'com.lambdaworks:scrypt:1.4.0'
 	compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
-	compile 'com.hazelcast:hazelcast:3.2.5'
+	compile "com.hazelcast:hazelcast:${HAZELCAST_VERSION}"
 	
-	compile 'aspectj:aspectjweaver:1.5.4'
+	compile 'org.aspectj:aspectjweaver:1.8.5'
 	
-    compile "org.glassfish:javax.json:1.0.4"
     
     compile 'com.thoughtworks.proxytoys:proxytoys:1.0'
     compile 'cglib:cglib-nodep:3.1'
@@ -52,9 +52,11 @@ dependencies {
     
     compile 'javax.inject:javax.inject:1'
     compile 'com.ning:async-http-client:1.7.23'
-    compile 'com.squareup.okhttp:okhttp:2.1.0'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.squareup.retrofit:converter-jackson:1.9.0'
+    
+    compile "com.squareup.okhttp:okhttp:${OKHTTP_VERSION}"
+    
+    compile "com.squareup.retrofit:retrofit:${RETROFIT_VERSION}"
+    compile "com.squareup.retrofit:converter-jackson:${RETROFIT_VERSION}"
     
 	compile "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
 
