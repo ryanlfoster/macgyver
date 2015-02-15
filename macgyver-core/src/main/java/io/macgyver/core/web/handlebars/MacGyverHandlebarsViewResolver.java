@@ -15,6 +15,9 @@ public class MacGyverHandlebarsViewResolver extends HandlebarsViewResolver {
 	public MacGyverHandlebarsViewResolver() {
 		super();
 		
+		
+		setCache(false);  // need way to set this dynamically
+		
 	}
 
 	public MacGyverHandlebarsViewResolver(
@@ -26,7 +29,7 @@ public class MacGyverHandlebarsViewResolver extends HandlebarsViewResolver {
 	@Override
 	protected URLTemplateLoader createTemplateLoader(ApplicationContext context) {
 		
-		URLTemplateLoader loader = new MacGyverTemplateLoader(context);
+		URLTemplateLoader loader = new MacGyverHandlebarsTemplateLoader(context);
 		
 		logger.info("createTemplateLoader: {}",loader);
 		return loader;

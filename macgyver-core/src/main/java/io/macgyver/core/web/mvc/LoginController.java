@@ -28,32 +28,21 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.io.CharStreams;
 
-@Component(value="macLoginController")
+@Component(value = "macLoginController")
 @Controller
 public class LoginController {
 
-		@Autowired
-		ApplicationContext ctx;
+	@Autowired
+	ApplicationContext ctx;
+
+	@RequestMapping("/login")
 	
-		@RequestMapping("/login")
-		@ResponseBody
-		public String home() {
-			
-		
-			Resource r = ctx.getResource("classpath:web/templates/auth/macgyver-login.html");
-			
-			
-			try (Reader reader = new InputStreamReader(r.getInputStream())) {
-				return CharStreams.toString(reader);
-			}
-			catch (IOException e) {
-				return "ERROR";
-			}
-			
-			
-		
-			
-		}
+	public ModelAndView home() {
+
+		ModelAndView m = new ModelAndView("macgyver-login");
+		return m;
 	
-	
+
+	}
+
 }
