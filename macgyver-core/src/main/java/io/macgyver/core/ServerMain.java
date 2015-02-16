@@ -42,19 +42,16 @@ public class ServerMain {
 
 	static Logger logger = org.slf4j.LoggerFactory.getLogger(ServerMain.class);
 
-
-
 	public static void main(String[] args) throws Exception {
 
-	
+		daemonizeIfRequired();
 
 		Bootstrap.printBanner();
-		
+
 		SpringApplication app = new SpringApplication(ServerMain.class);
-		
-		
+
 		app.addInitializers(new SpringContextInitializer());
-		
+
 		ConfigurableApplicationContext ctx = app.run(args);
 
 		Environment env = ctx.getEnvironment();
@@ -63,6 +60,27 @@ public class ServerMain {
 		Kernel.getInstance().getApplicationContext()
 				.getBean(MacGyverEventBus.class)
 				.post(new Kernel.ServerStartedEvent(Kernel.getInstance()));
+	}
+
+	public static void daemonizeIfRequired() throws Exception {
+		String val = System.getProperty("macgyver.daemon", "false");
+
+		boolean daemonize = val.trim().equalsIgnoreCase("true");
+
+		if (daemonize) {
+			com.sun.akuma.Daemon d = new com.sun.akuma.Daemon();
+
+			if (d.isDaemonized()) {
+				d.init();
+			} else {
+				if (daemonize) {
+					d.daemonize();
+					System.exit(0);
+				}
+			}
+		} else {
+			logger.info("not daemonizing process; set -Dmacgyver.daemon=true to daemonize");
+		}
 	}
 
 }
