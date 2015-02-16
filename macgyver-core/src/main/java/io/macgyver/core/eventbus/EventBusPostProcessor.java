@@ -31,8 +31,11 @@ public class EventBusPostProcessor implements BeanPostProcessor,
 	Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	EventBus eventBus;
+	MacGyverEventBus eventBus;
 
+	@Autowired
+	MacGyverAsyncEventBus asyncBus;
+	
 	private ApplicationContext ctx;
 
 	@Override
@@ -53,6 +56,7 @@ public class EventBusPostProcessor implements BeanPostProcessor,
 				log.trace("registering spring bean {} with {}", beanName,
 						eventBus);
 				eventBus.register(bean);
+				asyncBus.register(bean);
 			}
 		}
 		return bean;

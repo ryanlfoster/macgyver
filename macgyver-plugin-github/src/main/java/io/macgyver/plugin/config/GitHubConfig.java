@@ -14,6 +14,8 @@
 package io.macgyver.plugin.config;
 
 import io.macgyver.plugin.github.GitHubServiceFactory;
+import io.macgyver.plugin.github.SignatureBasedWebHookAuthenticator;
+import io.macgyver.plugin.github.WebHookController;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,4 +28,8 @@ public class GitHubConfig {
 		return new GitHubServiceFactory();
 	}
 	
+	@Bean
+	public WebHookController githubWebHookController() {
+		return new WebHookController();
+	}
 }
