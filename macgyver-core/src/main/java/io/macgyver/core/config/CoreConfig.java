@@ -31,6 +31,7 @@ import io.macgyver.core.auth.InternalUserManager;
 import io.macgyver.core.cluster.ClusterManager;
 import io.macgyver.core.crypto.Crypto;
 import io.macgyver.core.eventbus.EventBusPostProcessor;
+import io.macgyver.core.eventbus.MacGyverAsyncEventBus;
 import io.macgyver.core.eventbus.MacGyverEventBus;
 import io.macgyver.core.resource.provider.filesystem.FileSystemResourceProvider;
 import io.macgyver.core.script.BindingSupplierManager;
@@ -45,6 +46,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +60,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -89,6 +92,11 @@ public class CoreConfig implements EnvironmentAware {
 	@Bean(name = "macEventBus")
 	public MacGyverEventBus macEventBus() {
 		MacGyverEventBus b = new MacGyverEventBus();
+		return b;
+	}
+	@Bean(name = "macAsyncEventBus")
+	public MacGyverAsyncEventBus macAyncEventBus() {
+		MacGyverAsyncEventBus b = new MacGyverAsyncEventBus("macAsyncEventBus",Executors.newCachedThreadPool());
 		return b;
 	}
 

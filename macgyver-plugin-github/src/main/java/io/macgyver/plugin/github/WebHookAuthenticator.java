@@ -11,25 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.macgyver.plugin.config;
+package io.macgyver.plugin.github;
 
-import io.macgyver.plugin.github.GitHubServiceFactory;
-import io.macgyver.plugin.github.SignatureBasedWebHookAuthenticator;
-import io.macgyver.plugin.github.WebHookController;
+import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.google.common.base.Optional;
 
-@Configuration
-public class GitHubConfig {
+public abstract class WebHookAuthenticator {
 
-	@Bean
-	public GitHubServiceFactory githubServiceFactory() {
-		return new GitHubServiceFactory();
-	}
+	public abstract Optional<Boolean> authenticate(WebHookEvent event, HttpServletRequest request);
 	
-	@Bean
-	public WebHookController githubWebHookController() {
-		return new WebHookController();
-	}
 }

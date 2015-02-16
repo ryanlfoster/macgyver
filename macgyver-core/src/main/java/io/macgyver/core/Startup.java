@@ -14,6 +14,7 @@
 package io.macgyver.core;
 
 import io.macgyver.core.auth.InternalAuthenticationProvider;
+import io.macgyver.core.eventbus.MacGyverEventBus;
 import io.macgyver.core.resource.Resource;
 import io.macgyver.core.script.ExtensionResourceProvider;
 import io.macgyver.core.script.ScriptExecutor;
@@ -36,7 +37,7 @@ public class Startup implements InitializingBean {
 	Logger logger = LoggerFactory.getLogger(Startup.class);
 
 	@Autowired
-	EventBus bus;
+	MacGyverEventBus bus;
 
 	@Autowired
 	Kernel kernel;
