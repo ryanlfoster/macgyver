@@ -42,12 +42,18 @@ public class ServerMain {
 
 	static Logger logger = org.slf4j.LoggerFactory.getLogger(ServerMain.class);
 
+	static boolean daemonized = false;
+	
 	public static void main(String[] args) throws Exception {
 
 		daemonizeIfRequired();
 
 		Bootstrap.printBanner();
 
+		if (!daemonized) {
+			logger.info("process not daemonized; set -Dmacgyver.daemon=true to daemonize");
+		}
+		
 		SpringApplication app = new SpringApplication(ServerMain.class);
 
 		app.addInitializers(new SpringContextInitializer());
@@ -71,6 +77,7 @@ public class ServerMain {
 			com.sun.akuma.Daemon d = new com.sun.akuma.Daemon();
 
 			if (d.isDaemonized()) {
+				daemonized = true;
 				d.init();
 			} else {
 				if (daemonize) {
@@ -78,8 +85,6 @@ public class ServerMain {
 					System.exit(0);
 				}
 			}
-		} else {
-			logger.info("not daemonizing process; set -Dmacgyver.daemon=true to daemonize");
 		}
 	}
 
