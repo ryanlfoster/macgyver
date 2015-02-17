@@ -1,6 +1,8 @@
 ## Changes
 
 ### 0.85.0 (unreleased)
+* add jenkins plugin
+* add github webhook support
 * add handlebars template MVC support
 * remove javax.json
 * upgrade versions:
