@@ -73,6 +73,8 @@ dependencies {
 	compile "org.bouncycastle:bcprov-jdk15on:${BOUNCYCASTLE_VERSION}"
 	
     compile "org.kohsuke:akuma:1.9"
+    
+    compile 'org.jdom:jdom2:2.0.6'
 	
    /* compile(group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final') { 
           artifact { 

@@ -224,7 +224,10 @@ public class ServiceRegistry {
 	}
 
 	public void publish(ServiceCreatedEvent event) {
-		syncBus.post(event);
+		if (syncBus!=null) {
+			// test for null to assist with unit testing
+			syncBus.post(event);
+		}
 	}
 
 	protected Properties reloadProperties() throws MalformedURLException,
@@ -261,5 +264,13 @@ public class ServiceRegistry {
 	 */
 	public Map<String, ServiceDefinition> getServiceDefinitions() {
 		return ImmutableMap.copyOf(definitions);
+	}
+	
+	/**
+	 * This method is intended for unit testing.
+	 * @param def
+	 */
+	public void addServiceDefinition(ServiceDefinition def) {
+		definitions.put(def.getName(), def);
 	}
 }

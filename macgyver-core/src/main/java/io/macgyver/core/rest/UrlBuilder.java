@@ -26,11 +26,11 @@ import com.google.gwt.thirdparty.guava.common.collect.Maps;
 
 public class UrlBuilder {
 
-	String base;
+	private String base;
 
-	List<String> parts = Lists.newArrayList();
+	private List<String> parts = Lists.newArrayList();
 
-	Map<String, String> queryParameters = Maps.newHashMap();
+	private Map<String, String> queryParameters = Maps.newLinkedHashMap();
 
 	public UrlBuilder() {
 

@@ -14,6 +14,8 @@
 package io.macgyver.core.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
+import com.google.gwt.thirdparty.guava.common.base.Strings;
 import com.squareup.okhttp.Credentials;
 
 import io.macgyver.core.MacGyverConfigurationException;
@@ -21,17 +23,30 @@ import io.macgyver.core.MacGyverException;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.Builder;
+import retrofit.converter.Converter;
 import retrofit.converter.JacksonConverter;
 
 public class RetrofitBuilder {
 
-	Builder builder = new RestAdapter.Builder();
+	private Builder builder = new RestAdapter.Builder();
 
-	Class serviceClass;
-	String serviceClassName;
+	private Class serviceClass;
+	private String serviceClassName;
 
+	
+	public RetrofitBuilder url(String x) {
+		return endpoint(x);
+	}
+	
 	public RetrofitBuilder endpoint(String e) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(e), "endpoint cannot be null");
 		builder = builder.setEndpoint(e);
+		return this;
+	}
+
+	public RetrofitBuilder converter(Converter c) {
+		Preconditions.checkNotNull(c);
+		builder = builder.setConverter(c);
 		return this;
 	}
 
@@ -39,36 +54,46 @@ public class RetrofitBuilder {
 		this.serviceClass = c;
 		return this;
 	}
+
 	public RetrofitBuilder serviceClassName(String className) {
 		this.serviceClassName = className;
 		return this;
 	}
 
-	public RetrofitBuilder basicAuth(final String username, final String password) {
+	public RetrofitBuilder basicAuth(final String username,
+			final String password) {
 		RequestInterceptor c = new RequestInterceptor() {
 
 			@Override
 			public void intercept(RequestFacade request) {
-				request.addHeader("Authorization", Credentials.basic(username, password));
-				
+				request.addHeader("Authorization",
+						Credentials.basic(username, password));
+
 			}
-			
+
 		};
 		return interceptor(c);
 	}
+
 	public RetrofitBuilder interceptor(RequestInterceptor r) {
 		builder = builder.setRequestInterceptor(r);
 		return this;
 	}
 
+	public RestAdapter buildRestAdatper() {
+		return builder.build();
+	}
+
 	public Object build() {
 		try {
-			RestAdapter adapter = builder.setConverter(new JacksonConverter())
-					.build();
+			RestAdapter adapter = buildRestAdatper();
 
 			Class<?> c = serviceClass;
-			
-			if (c==null) {
+
+			if (c == null) {
+				Preconditions.checkArgument(
+						!Strings.isNullOrEmpty(serviceClassName),
+						"serviceClass or serviceClassName must be set");
 				c = Class.forName(serviceClassName);
 			}
 
@@ -80,6 +105,5 @@ public class RetrofitBuilder {
 		}
 
 	}
-
 
 }

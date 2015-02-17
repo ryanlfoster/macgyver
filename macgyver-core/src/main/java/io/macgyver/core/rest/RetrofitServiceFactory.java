@@ -13,14 +13,11 @@
  */
 package io.macgyver.core.rest;
 
-import retrofit.RestAdapter;
-import retrofit.converter.JacksonConverter;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Strings;
-
 import io.macgyver.core.service.BasicServiceFactory;
 import io.macgyver.core.service.ServiceDefinition;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 public class RetrofitServiceFactory<T> extends BasicServiceFactory<T> {
 
@@ -31,10 +28,14 @@ public class RetrofitServiceFactory<T> extends BasicServiceFactory<T> {
 		this.serviceClassName = serviceClassName;
 	}
 
+	protected RetrofitBuilder doCreateRetrofitBuilder(RetrofitBuilder b, ServiceDefinition def) {
+		return b;
+	}
 	@Override
 	protected Object doCreateInstance(ServiceDefinition def) {
-		//"https://server/rest/api/latest"
-		
+
+		String url = def.getProperties().getProperty("url");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(url),"url property must be set");
 		
 		RetrofitBuilder builder = new RetrofitBuilder().endpoint(def.getProperties().getProperty("url"));
 		
@@ -44,7 +45,6 @@ public class RetrofitServiceFactory<T> extends BasicServiceFactory<T> {
 		}
 		
 		builder = builder.serviceClassName(serviceInterface);
-		builder = builder.basicAuth(def.getProperties().getProperty("username"), def.getProperties().getProperty("password"));
 		
 		Object service = builder.build();
 		

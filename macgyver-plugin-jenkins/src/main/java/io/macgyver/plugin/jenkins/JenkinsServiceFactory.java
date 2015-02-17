@@ -11,25 +11,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.macgyver.plugin.atlassian.jira;
+package io.macgyver.plugin.jenkins;
 
 import io.macgyver.core.rest.RetrofitBuilder;
 import io.macgyver.core.rest.RetrofitServiceFactory;
 import io.macgyver.core.service.ServiceDefinition;
 
 
-public class JiraServiceFactory extends RetrofitServiceFactory<JiraClient>{
+public class JenkinsServiceFactory extends RetrofitServiceFactory<JenkinsClient>{
 
-	public JiraServiceFactory() {
-		super("jira",JiraClient.class.getName());
+	public JenkinsServiceFactory() {
+		super("jenkins",JenkinsClient.class.getName());
 	
 	}
 
 	@Override
-	protected RetrofitBuilder doCreateRetrofitBuilder(RetrofitBuilder b, ServiceDefinition def) {
-		RetrofitBuilder builder = b.basicAuth(def.getProperties().getProperty("username"), def.getProperties().getProperty("password"));
-		
-		return builder;
+	protected RetrofitBuilder doCreateRetrofitBuilder(RetrofitBuilder b,
+			ServiceDefinition def) {
+		return b;
 	}
 
 }
