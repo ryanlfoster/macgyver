@@ -64,11 +64,14 @@ public abstract class ServiceFactory<T> implements ApplicationContextAware {
 
 	}
 
+	public void setServiceRegistry(ServiceRegistry serviceRegistry) {
+		this.registry = serviceRegistry;
+	}
 	protected abstract Object doCreateInstance(ServiceDefinition def);
 
 	public void doConfigureDefinition(ServiceDefinition def) {}
 	public synchronized Object get(String name) {
-		Preconditions.checkNotNull(registry);
+		Preconditions.checkNotNull(registry, "serviceRegistry cannot be null");
 		Preconditions.checkNotNull(name);
 		Preconditions.checkNotNull(registry.instances);
 		Object instance = registry.instances.get(name);
