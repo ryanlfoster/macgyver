@@ -15,16 +15,12 @@ package io.macgyver.core;
 
 import io.macgyver.core.eventbus.MacGyverEventBus;
 
-import java.io.File;
-import java.net.MalformedURLException;
-
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
 /**

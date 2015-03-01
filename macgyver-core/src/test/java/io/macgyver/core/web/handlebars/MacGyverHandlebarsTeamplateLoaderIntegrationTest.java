@@ -14,17 +14,15 @@
 package io.macgyver.core.web.handlebars;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import io.macgyver.test.MacGyverIntegrationTest;
 
 import java.io.IOException;
 import java.net.URL;
 
 import javax.inject.Inject;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
-
-import io.macgyver.test.MacGyverIntegrationTest;
 
 public class MacGyverHandlebarsTeamplateLoaderIntegrationTest extends MacGyverIntegrationTest {
 

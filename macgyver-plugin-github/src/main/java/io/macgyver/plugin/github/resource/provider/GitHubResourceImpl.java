@@ -13,19 +13,16 @@
  */
 package io.macgyver.plugin.github.resource.provider;
 
+import io.macgyver.core.resource.Resource;
+import io.macgyver.core.resource.ResourceProvider;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import org.kohsuke.github.GHContent;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
-import com.google.common.io.CharStreams;
-
-import io.macgyver.core.resource.Resource;
-import io.macgyver.core.resource.ResourceProvider;
 
 public class GitHubResourceImpl extends Resource {
 

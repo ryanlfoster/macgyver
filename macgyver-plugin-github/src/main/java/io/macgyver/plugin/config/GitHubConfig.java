@@ -14,7 +14,6 @@
 package io.macgyver.plugin.config;
 
 import io.macgyver.plugin.github.GitHubServiceFactory;
-import io.macgyver.plugin.github.SignatureBasedWebHookAuthenticator;
 import io.macgyver.plugin.github.WebHookController;
 
 import org.springframework.context.annotation.Bean;

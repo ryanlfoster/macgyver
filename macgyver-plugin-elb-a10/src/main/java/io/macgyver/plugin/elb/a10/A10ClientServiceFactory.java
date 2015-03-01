@@ -15,9 +15,6 @@ package io.macgyver.plugin.elb.a10;
 
 import io.macgyver.core.service.ServiceDefinition;
 import io.macgyver.core.service.ServiceFactory;
-import io.macgyver.core.service.ServiceRegistry;
-
-import java.util.Set;
 
 public class A10ClientServiceFactory extends ServiceFactory<A10Client> {
 

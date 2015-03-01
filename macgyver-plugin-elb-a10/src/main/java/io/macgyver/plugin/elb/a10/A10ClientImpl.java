@@ -13,8 +13,6 @@
  */
 package io.macgyver.plugin.elb.a10;
 
-import io.macgyver.core.ServiceInvocationException;
-import io.macgyver.core.jaxrs.SslTrust;
 import io.macgyver.plugin.elb.ElbException;
 
 import java.io.IOException;
@@ -41,11 +39,8 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.css.sac.InputSource;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -56,7 +51,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -64,12 +58,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.squareup.okhttp.ConnectionSpec;
+import com.squareup.okhttp.ConnectionSpec.Builder;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.TlsVersion;
-import com.squareup.okhttp.ConnectionSpec.Builder;
 
 public class A10ClientImpl implements A10Client {
 

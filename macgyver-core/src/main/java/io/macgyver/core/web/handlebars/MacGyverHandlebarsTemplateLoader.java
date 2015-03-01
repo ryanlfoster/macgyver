@@ -22,7 +22,6 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import com.github.jknack.handlebars.springmvc.SpringTemplateLoader;

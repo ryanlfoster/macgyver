@@ -20,10 +20,8 @@ import io.macgyver.core.web.mvc.HomeController;
 import io.macgyver.core.web.mvc.MacgyverWeb;
 import io.macgyver.core.web.vaadin.MacGyverUI;
 import io.macgyver.core.web.vaadin.MacGyverVaadinServlet;
-import io.macgyver.core.web.vaadin.ViewDecorator;
 import io.macgyver.core.web.vaadin.ViewDecorators;
 import io.macgyver.core.web.vaadin.views.admin.AdminPlugin;
-import io.macgyver.core.web.vaadin.views.admin.BeansView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +42,6 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver;
-import com.vaadin.navigator.View;
 
 @Configuration
 @ComponentScan(basePackageClasses = { HomeController.class })

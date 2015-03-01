@@ -13,7 +13,8 @@
  */
 package io.macgyver.plugin.elb.a10;
 
-import java.io.IOException;
+import io.macgyver.test.MacGyverIntegrationTest;
+
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
@@ -22,15 +23,8 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
-import com.google.gson.JsonObject;
-
-import io.macgyver.plugin.elb.a10.A10ClientImpl;
-import io.macgyver.plugin.elb.a10.A10RemoteException;
-import io.macgyver.test.MacGyverIntegrationTest;
 
 public class A10ClientIntegrationTest extends MacGyverIntegrationTest {
 

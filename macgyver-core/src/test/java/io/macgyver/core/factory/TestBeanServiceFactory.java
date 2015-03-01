@@ -13,12 +13,9 @@
  */
 package io.macgyver.core.factory;
 
-import java.util.Set;
-
 import io.macgyver.core.TestBean;
 import io.macgyver.core.service.ServiceDefinition;
 import io.macgyver.core.service.ServiceFactory;
-import io.macgyver.core.service.ServiceRegistry;
 
 public class TestBeanServiceFactory extends ServiceFactory<TestBean> {
 

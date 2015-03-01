@@ -13,6 +13,14 @@
  */
 package io.macgyver.core.web.vaadin.views.admin;
 
+import io.macgyver.core.Kernel;
+import io.macgyver.core.service.ServiceDefinition;
+import io.macgyver.core.service.ServiceFactory;
+import io.macgyver.core.service.ServiceRegistry;
+import io.macgyver.core.web.vaadin.IndexedJsonContainer;
+import io.macgyver.core.web.vaadin.MacGyverView;
+import io.macgyver.core.web.vaadin.ViewConfig;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,21 +37,8 @@ import com.google.gwt.thirdparty.guava.common.base.Strings;
 import com.vaadin.data.Item;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.ui.Form;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-
-import io.macgyver.core.Kernel;
-import io.macgyver.core.service.ServiceDefinition;
-import io.macgyver.core.service.ServiceFactory;
-import io.macgyver.core.service.ServiceRegistry;
-import io.macgyver.core.web.vaadin.IndexedJsonContainer;
-import io.macgyver.core.web.vaadin.MacGyverView;
-import io.macgyver.core.web.vaadin.ViewConfig;
 
 @ViewConfig(viewName = ServicesView.VIEW_NAME, menuPath = { "Admin", "Services" })
 public class ServicesView extends MacGyverView {

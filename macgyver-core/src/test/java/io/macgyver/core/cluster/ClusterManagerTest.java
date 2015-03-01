@@ -13,15 +13,14 @@
  */
 package io.macgyver.core.cluster;
 
+import io.macgyver.test.MacGyverIntegrationTest;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.instance.HazelcastInstanceFactory;
-
-import io.macgyver.test.MacGyverIntegrationTest;
 
 public class ClusterManagerTest extends MacGyverIntegrationTest {
 

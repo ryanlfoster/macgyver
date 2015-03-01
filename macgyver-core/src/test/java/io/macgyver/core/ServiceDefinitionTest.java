@@ -13,15 +13,16 @@
  */
 package io.macgyver.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import io.macgyver.core.service.ServiceDefinition;
 import io.macgyver.core.service.ServiceFactory;
-import io.macgyver.core.service.ServiceRegistry;
 
 import java.util.Properties;
-import java.util.Set;
 
 import org.junit.Assert;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class ServiceDefinitionTest {

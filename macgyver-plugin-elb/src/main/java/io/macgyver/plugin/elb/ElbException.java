@@ -13,7 +13,6 @@
  */
 package io.macgyver.plugin.elb;
 
-import io.macgyver.core.MacGyverException;
 import io.macgyver.core.ServiceInvocationException;
 
 public class ElbException extends ServiceInvocationException {

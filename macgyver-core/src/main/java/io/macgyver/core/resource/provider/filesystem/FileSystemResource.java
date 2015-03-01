@@ -13,6 +13,9 @@
  */
 package io.macgyver.core.resource.provider.filesystem;
 
+import io.macgyver.core.resource.Resource;
+import io.macgyver.core.resource.ResourceProvider;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,10 +28,6 @@ import com.google.common.base.Objects;
 import com.google.common.hash.Hashing;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
-
-import io.macgyver.core.resource.Resource;
-import io.macgyver.core.resource.ResourceProvider;
-import io.macgyver.core.util.HashUtils;
 
 public class FileSystemResource extends Resource {
 

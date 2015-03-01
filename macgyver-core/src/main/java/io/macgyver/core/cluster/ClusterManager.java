@@ -13,14 +13,10 @@
  */
 package io.macgyver.core.cluster;
 
-import java.util.Map;
 import java.util.Timer;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.TimerTask;
 
 import javax.annotation.PostConstruct;
-
-import java.util.TimerTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicReference;
-import com.hazelcast.core.ILock;
 import com.hazelcast.core.Member;
 import com.hazelcast.core.MemberAttributeEvent;
 import com.hazelcast.core.MembershipEvent;

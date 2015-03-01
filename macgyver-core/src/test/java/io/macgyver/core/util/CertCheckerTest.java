@@ -16,8 +16,6 @@ package io.macgyver.core.util;
 import java.io.IOException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
-import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;

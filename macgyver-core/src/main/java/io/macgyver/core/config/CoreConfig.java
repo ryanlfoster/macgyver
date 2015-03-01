@@ -60,7 +60,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;

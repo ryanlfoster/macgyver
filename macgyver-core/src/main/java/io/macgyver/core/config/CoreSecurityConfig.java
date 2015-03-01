@@ -16,7 +16,6 @@ package io.macgyver.core.config;
 import io.macgyver.core.ScriptHookManager;
 import io.macgyver.core.auth.GrantedAuthoritiesTranslatorChain;
 import io.macgyver.core.auth.GrantedAuthoritiesTranslatorScriptHook;
-
 import io.macgyver.core.auth.InternalAuthenticationProvider;
 import io.macgyver.core.auth.LogOnlyAccessDecisionVoter;
 import io.macgyver.core.auth.MacGyverAccessDecisionManager;
@@ -33,7 +32,6 @@ import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.annotation.Jsr250Voter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;

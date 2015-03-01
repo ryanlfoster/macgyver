@@ -13,18 +13,15 @@
  */
 package io.macgyver.core.rest;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Preconditions;
-import com.google.gwt.thirdparty.guava.common.base.Strings;
-import com.squareup.okhttp.Credentials;
-
-import io.macgyver.core.MacGyverConfigurationException;
 import io.macgyver.core.MacGyverException;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.Builder;
 import retrofit.converter.Converter;
-import retrofit.converter.JacksonConverter;
+
+import com.google.common.base.Preconditions;
+import com.google.gwt.thirdparty.guava.common.base.Strings;
+import com.squareup.okhttp.Credentials;
 
 public class RetrofitBuilder {
 

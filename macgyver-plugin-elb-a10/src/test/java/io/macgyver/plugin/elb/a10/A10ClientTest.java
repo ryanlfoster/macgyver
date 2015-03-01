@@ -14,32 +14,12 @@
 package io.macgyver.plugin.elb.a10;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
-import com.squareup.okhttp.ConnectionSpec;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.TlsVersion;
-import com.squareup.okhttp.ConnectionSpec.Builder;
-
-import io.macgyver.core.jaxrs.SslTrust;
-import io.macgyver.plugin.elb.a10.A10ClientImpl;
-import io.macgyver.plugin.elb.a10.A10RemoteException;
-import io.macgyver.test.MacGyverIntegrationTest;
 
 public class A10ClientTest {
 

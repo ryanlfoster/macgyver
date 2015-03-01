@@ -20,7 +20,6 @@ import io.macgyver.core.script.ExtensionResourceProvider;
 import io.macgyver.core.script.ScriptExecutor;
 import io.macgyver.core.service.ServiceRegistry;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -29,7 +28,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 public class Startup implements InitializingBean {

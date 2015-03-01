@@ -13,21 +13,10 @@
  */
 package io.macgyver.core.web.vaadin;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-
-import org.bouncycastle.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import com.vaadin.navigator.View;
 
 

@@ -13,19 +13,16 @@
  */
 package io.macgyver.core.web.vaadin.views.admin;
 
-import org.springframework.context.ApplicationContext;
-
 import io.macgyver.core.Kernel;
 import io.macgyver.core.web.vaadin.ViewConfig;
 import io.macgyver.core.web.vaadin.ViewDecorators;
-import io.macgyver.core.web.vaadin.ViewMetadata;
 
-import com.google.common.collect.Lists;
+import org.springframework.context.ApplicationContext;
+
 import com.vaadin.data.Item;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 

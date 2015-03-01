@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import com.thoughtworks.proxy.factory.CglibProxyFactory;
 import com.thoughtworks.proxy.toys.hotswap.HotSwapping;
-import com.thoughtworks.proxy.toys.hotswap.HotSwapping.HotSwappingWith;
 import com.thoughtworks.proxy.toys.hotswap.Swappable;
 
 public class HotSwapProxyTest {

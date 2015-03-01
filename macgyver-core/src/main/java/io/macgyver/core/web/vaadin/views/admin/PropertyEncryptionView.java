@@ -13,31 +13,28 @@
  */
 package io.macgyver.core.web.vaadin.views.admin;
 
+import io.macgyver.core.Kernel;
+import io.macgyver.core.MacGyverException;
+import io.macgyver.core.crypto.Crypto;
+import io.macgyver.core.web.vaadin.MacGyverView;
+import io.macgyver.core.web.vaadin.ViewConfig;
+
 import java.security.GeneralSecurityException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Button.ClickEvent;
-
-import io.macgyver.core.Kernel;
-import io.macgyver.core.MacGyverException;
-import io.macgyver.core.crypto.Crypto;
-import io.macgyver.core.web.vaadin.MacGyverView;
-import io.macgyver.core.web.vaadin.ViewConfig;
-import io.macgyver.core.web.vaadin.ViewMetadata;
 
 @ViewConfig(viewName=PropertyEncryptionView.VIEW_NAME,menuPath={"Admin","Encrypt String"})
 public class PropertyEncryptionView extends MacGyverView {

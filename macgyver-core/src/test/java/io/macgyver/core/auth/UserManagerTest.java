@@ -22,7 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class UserManagerTest extends MacGyverIntegrationTest {

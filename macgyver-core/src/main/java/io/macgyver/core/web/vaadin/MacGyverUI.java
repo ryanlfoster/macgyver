@@ -19,7 +19,6 @@ import io.macgyver.core.auth.AuthUtil;
 import io.macgyver.core.auth.MacGyverRole;
 import io.macgyver.core.util.JsonNodes;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;

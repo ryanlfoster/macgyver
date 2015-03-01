@@ -13,13 +13,11 @@
  */
 package io.macgyver.core.cluster;
 
-import org.jboss.logging.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.Member;
 import com.hazelcast.core.MemberAttributeEvent;
 import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;

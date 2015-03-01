@@ -13,10 +13,11 @@
  */
 package io.macgyver.plugin.git;
 
-import io.macgyver.core.resource.Resource;
-
 import java.io.File;
 import java.io.IOException;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.AfterClass;
@@ -24,9 +25,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 
 import com.google.common.io.Files;
 

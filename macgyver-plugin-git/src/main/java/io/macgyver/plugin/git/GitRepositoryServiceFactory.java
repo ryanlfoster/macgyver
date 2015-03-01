@@ -13,16 +13,13 @@
  */
 package io.macgyver.plugin.git;
 
-import java.util.Properties;
-import java.util.Set;
-
-import org.eclipse.jgit.api.Git;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import io.macgyver.core.script.ExtensionResourceProvider;
 import io.macgyver.core.service.ServiceDefinition;
 import io.macgyver.core.service.ServiceFactory;
-import io.macgyver.core.service.ServiceRegistry;
+
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class GitRepositoryServiceFactory extends ServiceFactory<GitRepository>{
 

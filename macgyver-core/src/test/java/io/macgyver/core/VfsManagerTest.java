@@ -21,8 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import javax.tools.FileObject;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

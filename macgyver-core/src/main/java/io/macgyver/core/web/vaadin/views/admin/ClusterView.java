@@ -13,7 +13,12 @@
  */
 package io.macgyver.core.web.vaadin.views.admin;
 
-import java.net.InetAddress;
+import io.macgyver.core.Kernel;
+import io.macgyver.core.cluster.ClusterManager;
+import io.macgyver.core.web.vaadin.IndexedJsonContainer;
+import io.macgyver.core.web.vaadin.ViewConfig;
+import io.macgyver.core.web.vaadin.views.StandardMacGyverView;
+
 import java.net.InetSocketAddress;
 import java.util.Set;
 
@@ -23,12 +28,6 @@ import com.hazelcast.core.Member;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.Align;
-
-import io.macgyver.core.Kernel;
-import io.macgyver.core.cluster.ClusterManager;
-import io.macgyver.core.web.vaadin.IndexedJsonContainer;
-import io.macgyver.core.web.vaadin.ViewConfig;
-import io.macgyver.core.web.vaadin.views.StandardMacGyverView;
 
 @ViewConfig(menuPath = { "Admin", "Cluster Info" }, viewName = "admin/cluster")
 public class ClusterView extends StandardMacGyverView {

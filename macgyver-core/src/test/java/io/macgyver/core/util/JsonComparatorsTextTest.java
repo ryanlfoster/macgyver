@@ -15,12 +15,9 @@ package io.macgyver.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Comparator;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;

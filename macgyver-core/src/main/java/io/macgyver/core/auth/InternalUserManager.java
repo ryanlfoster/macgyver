@@ -15,9 +15,7 @@ package io.macgyver.core.auth;
 
 import io.macgyver.neorx.rest.NeoRxClient;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.annotation.PostConstruct;
 
@@ -27,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;

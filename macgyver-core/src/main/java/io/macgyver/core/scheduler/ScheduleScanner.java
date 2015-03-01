@@ -22,7 +22,6 @@ import io.macgyver.neorx.rest.NeoRxClient;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.LineProcessor;
 

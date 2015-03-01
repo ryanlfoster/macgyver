@@ -14,15 +14,12 @@
 package io.macgyver.core;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.tools.FileObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
