@@ -1,13 +1,11 @@
 
 
 
-plugins {
-    id "com.github.hierynomus.license" version "0.11.0"
-}
+
 
 buildscript {
 	ext {
-		springBootVersion = '1.1.5.RELEASE'
+		springBootVersion = '1.2.2.RELEASE'
 	}
     repositories {
 		mavenLocal()
@@ -22,7 +20,9 @@ buildscript {
     }
 }
 
-
+plugins {
+    id "com.github.hierynomus.license" version "0.11.0"
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
