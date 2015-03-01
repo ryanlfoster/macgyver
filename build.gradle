@@ -1,14 +1,9 @@
 
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
-}
-/*allprojects {
-    group 'io.macgyver'
-    version = '1.0.0-SNAPSHOT'
-}
-*/
 
+plugins {
+    id "com.github.hierynomus.license" version "0.11.0"
+}
 
 buildscript {
 	ext {
@@ -21,12 +16,16 @@ buildscript {
     }
     dependencies {
 
-        classpath 'org.ajoberstar:gradle-git:0.8.0'
+		classpath 'org.ajoberstar:gradle-git:1.0.0'
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 
-	      classpath "nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0"
-	  
     }
+}
+
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
 }
 
 subprojects {
@@ -55,8 +54,8 @@ subprojects {
     	all*.exclude group: 'log4j'
     	all*.exclude group: 'xml-apis'
 		all*.exclude group: 'org.bouncycastle', module: 'bcprov-jdk16'
-        all*.exclude group: 'javax.ws.rs' , module: 'jsr311-api'
-		
+		all*.exclude group: 'javax.ws.rs' , module: 'jsr311-api'
+
 		provided
     }
     
