@@ -296,4 +296,6 @@ public class CoreConfig implements EnvironmentAware {
 	public ClusterManager macClusterManager() {
 		return new ClusterManager();
 	}
+	
+
 }
