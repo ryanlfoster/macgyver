@@ -13,20 +13,26 @@
  */
 package io.macgyver.jython;
 
+import io.macgyver.test.MacGyverIntegrationTest;
+
 import javax.script.ScriptEngineManager;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ScriptEngineManagerTest {
+public class ScriptEngineManagerTest extends MacGyverIntegrationTest {
 
 	
 	
 	@Test
 	public void testEngine() {
+		
+		// There is a defect in jython that prevents this from working 
+		// unless Options.importSite=false.  A hack-y fix is to set this in the core module.
+		// So that we don't break here.  This is why this is set as an integration test.
+		
 		ScriptEngineManager m = new ScriptEngineManager();
-		
-		
+	
 		Assert.assertNotNull(m.getEngineByExtension("py"));
 		Assert.assertNotNull(m.getEngineByName("python"));
 		
