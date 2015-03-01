@@ -25,7 +25,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 
 public class A10HAClientImpl implements A10Client, Runnable {
 
-	private Logger logger = LoggerFactory.getLogger(A10HAClientImplTest.class);
+	private Logger logger = LoggerFactory.getLogger(A10HAClientImpl.class);
 
 	protected List<A10Client> clients = Lists.newCopyOnWriteArrayList();
 
