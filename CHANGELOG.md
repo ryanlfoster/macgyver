@@ -1,6 +1,16 @@
 ## Changes
 
-### 0.85.0 (unreleased)
+### 0.86.0 
+* A10 will automatically detect active/standby state
+* upgrade vaadin 7.3.10 -> 7.4.0
+* add clojure jsr223 support
+* upgrade jython and jruby
+* upgrade spring 4.1.4.RELEASE -> 4.1.5.RELEASE
+* upgrade gradle 2.2.1 -> 2.3
+* rename macgyver-jython -> macgyver-plugin-jython
+* rename macgyver-jruby -> macgyver-plugin-jruby
+
+### 0.85.0
 * add jenkins plugin
 * add github webhook support
 * add handlebars template MVC support
