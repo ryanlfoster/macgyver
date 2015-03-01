@@ -1,6 +1,6 @@
 include   'macgyver-core',
-            'macgyver-jruby',
-            'macgyver-jython',
+            'macgyver-plugin-jruby',
+            'macgyver-plugin-jython',
             'macgyver-plugin-metrics',
 			'macgyver-plugin-cmdb',
             'macgyver-plugin-ldap',
