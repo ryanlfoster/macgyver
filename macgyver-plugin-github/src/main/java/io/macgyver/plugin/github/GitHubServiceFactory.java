@@ -13,6 +13,7 @@
  */
 package io.macgyver.plugin.github;
 
+import io.macgyver.core.ConfigurationException;
 import io.macgyver.core.service.BasicServiceFactory;
 import io.macgyver.core.service.ServiceDefinition;
 
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.kohsuke.github.GitHub;
+
+import com.google.gwt.thirdparty.guava.common.base.Strings;
 
 public class GitHubServiceFactory extends BasicServiceFactory<GitHub> {
 
@@ -33,13 +36,43 @@ public class GitHubServiceFactory extends BasicServiceFactory<GitHub> {
 			Properties props = def.getProperties();
 			String url = props.getProperty("url");
 			String oauthToken = props.getProperty("oauthToken");
+			String username = props.getProperty("username");
+			String password = props.getProperty("password");
+
+			boolean useToken = Strings.isNullOrEmpty(oauthToken) == false;
+			boolean useUsernamePassword = (Strings.isNullOrEmpty(username)==false) && (Strings.isNullOrEmpty(password)==false);
+			
+			String message = "connecting to {} using {}";
+			
 			GitHub gh = null;
 			if (url != null) {
-				logger.info("connecting to: {}", url);
-				gh = GitHub.connectToEnterprise(url, oauthToken);
+			
+				if (useToken) {
+					logger.info(message,url,"oauth");
+					gh = GitHub.connectToEnterprise(url, oauthToken);
+				}
+				else if (useUsernamePassword) {
+					logger.info(message,url,"username/password");
+					gh = GitHub.connectToEnterprise(url, username, password);
+				}
+				else {
+					throw new ConfigurationException("connection to GitHub enterprise requires either oauth token or usernmae/password");
+				}
+
 			} else {
-				logger.info("connecting to github.com");
-				gh = GitHub.connectUsingOAuth(oauthToken);
+			
+				if (useToken) {
+					logger.info(message,"api.github.com","oauth");
+					gh = GitHub.connectUsingOAuth(oauthToken);
+				}
+				else if (useUsernamePassword) {
+					logger.info(message,"api.github.com","username/password");
+					gh = GitHub.connectUsingPassword(username, password);
+				}
+				else {
+					logger.info(message,"api.github.com","anonymous");
+					gh = GitHub.connectAnonymously();
+				}
 
 			}
 			return gh;
