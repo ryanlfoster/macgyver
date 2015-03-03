@@ -133,6 +133,37 @@ public class A10ClientImpl implements A10Client {
 		}
 	}
 
+	void throwExceptionIfNecessary(Element element) {
+		if (element.getName().equals("response")) {
+			String status = element.getAttributeValue("status");
+			
+			if (status.equalsIgnoreCase("ok")) {
+				// ok
+			}
+			else if (status.equalsIgnoreCase("fail")) {
+				String code = "";
+				String msg = "";
+				
+				
+				Element error = element.getChild("error");
+				if (error!=null) {
+					code = error.getAttributeValue("code");
+					msg = error.getAttributeValue("msg");
+				}
+				 
+				throw new A10RemoteException(code,msg);
+			}
+			else {
+				logger.warn("unexpected status: {}",status);
+			}
+			
+			
+		}
+		else {
+			logger.warn("unexpected response element: {}",element.getName());
+		}
+		
+	}
 	void throwExceptionIfNecessary(ObjectNode response) {
 
 		if (response.has("response") && response.get("response").has("err")) {
@@ -161,7 +192,7 @@ public class A10ClientImpl implements A10Client {
 					.build();
 			Response resp = getClient().newCall(r).execute();
 
-			ObjectNode obj = parseResponse(resp, "authenticate");
+			ObjectNode obj = parseJsonResponse(resp, "authenticate");
 
 			String sid = obj.path("session_id").asText();
 			if (Strings.isNullOrEmpty(sid)) {
@@ -314,7 +345,7 @@ public class A10ClientImpl implements A10Client {
 		}
 	}
 
-	protected ObjectNode parseResponse(Response response, String method) {
+	protected ObjectNode parseJsonResponse(Response response, String method) {
 		try {
 			Preconditions.checkNotNull(response);
 
@@ -367,7 +398,7 @@ public class A10ClientImpl implements A10Client {
 					new Request.Builder().url(getUrl()).post(fb.build())
 							.build()).execute();
 
-			return parseResponse(resp, method);
+			return parseJsonResponse(resp, method);
 
 		} catch (IOException e) {
 			throw new ElbException(e);
@@ -391,7 +422,9 @@ public class A10ClientImpl implements A10Client {
 					new Request.Builder().url(getUrl()).post(fb.build())
 							.build()).execute();
 
-			return parseXmlResponse(resp, method);
+			Element element = parseXmlResponse(resp, method);
+			throwExceptionIfNecessary(element);
+			return element;
 
 		} catch (IOException e) {
 			throw new ElbException(e);

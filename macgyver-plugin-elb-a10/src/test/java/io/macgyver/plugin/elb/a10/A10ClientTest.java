@@ -14,7 +14,13 @@
 package io.macgyver.plugin.elb.a10;
 
 import java.io.IOException;
+import java.io.StringReader;
 
+import org.assertj.core.api.Assertions;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,28 +31,23 @@ public class A10ClientTest {
 
 	@Test
 	public void testInvalidSession() throws IOException {
-		String invalidMethod = "{\n" + 
-				"  \"response\" : {\n" + 
-				"    \"status\" : \"fail\",\n" + 
-				"    \"err\" : {\n" + 
-				"      \"code\" : 1009,\n" + 
-				"      \"msg\" : \"Invalid session ID\"\n" + 
-				"    }\n" + 
-				"  }\n" + 
-				"}";
+		String invalidMethod = "{\n" + "  \"response\" : {\n"
+				+ "    \"status\" : \"fail\",\n" + "    \"err\" : {\n"
+				+ "      \"code\" : 1009,\n"
+				+ "      \"msg\" : \"Invalid session ID\"\n" + "    }\n"
+				+ "  }\n" + "}";
 
 		ObjectNode x = (ObjectNode) new ObjectMapper().readTree(invalidMethod);
-		
+
 		try {
-			A10ClientImpl client = new A10ClientImpl("http://localhost", "xx", "");
+			A10ClientImpl client = new A10ClientImpl("http://localhost", "xx",
+					"");
 			client.throwExceptionIfNecessary(x);
 			Assert.fail("exception not thrown");
 		} catch (A10RemoteException e) {
-			
-			
+
 			Assert.assertEquals("1009", e.getErrorCode());
-			Assert.assertEquals("Invalid session ID",
-					e.getErrorMessage());
+			Assert.assertEquals("Invalid session ID", e.getErrorMessage());
 		}
 	}
 
@@ -61,7 +62,8 @@ public class A10ClientTest {
 		ObjectNode x = (ObjectNode) new ObjectMapper().readTree(json);
 
 		try {
-			A10ClientImpl client = new A10ClientImpl("http://localhost", "xx", "");
+			A10ClientImpl client = new A10ClientImpl("http://localhost", "xx",
+					"");
 			client.throwExceptionIfNecessary(x);
 			Assert.fail("exception not thrown");
 		} catch (A10RemoteException e) {
@@ -76,6 +78,47 @@ public class A10ClientTest {
 		A10ClientImpl client = new A10ClientImpl("http://localhost", "xx", "");
 		Assert.assertTrue(client.toMap(null).isEmpty());
 		Assert.assertEquals("2", client.toMap("a", "1", "b", "2").get("b"));
+
+	}
+
+	@Test
+	public void testThrowExceptionIfNecessaryXml() throws IOException,
+			JDOMException {
+
+		try {
+			String failure = "<response status=\"fail\">\n"
+					+ "  <error code=\"1008\" msg=\"Invalid web service method name\" />\n"
+					+ "</response>";
+
+			Element element = new SAXBuilder().build(new StringReader(failure))
+					.getRootElement();
+
+			A10ClientImpl client = new A10ClientImpl("http://localhost", "xx",
+					"");
+			client.throwExceptionIfNecessary(element);
+			Assert.fail();
+		} catch (A10RemoteException e) {
+			Assertions.assertThat(e).hasMessageContaining("1008").hasMessageContaining("Invalid web service method name");
+		}
+
+	}
+	
+	@Test
+	public void testThrowExceptionIfNecessaryXmlOk() throws IOException,
+			JDOMException {
+
+	
+			String failure = "<response status=\"ok\">\n"
+					+ "  <error code=\"1008\" msg=\"Invalid web service method name\" />\n"
+					+ "</response>";
+
+			Element element = new SAXBuilder().build(new StringReader(failure))
+					.getRootElement();
+
+			A10ClientImpl client = new A10ClientImpl("http://localhost", "xx",
+					"");
+			client.throwExceptionIfNecessary(element);
+	
 
 	}
 
