@@ -138,7 +138,7 @@ task showRepos << {
 }
 
 run {  
-    
+    systemProperty "logging.config", "./config/logback.xml"
     if ( project.hasProperty("macgyver.project.dir")) {
         systemProperty "macgyver.project.dir", project['macgyver.project.dir']
     }
