@@ -29,6 +29,7 @@ task wrapper(type: Wrapper) {
 }
 
 subprojects {
+    apply plugin: 'application'
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'eclipse'
@@ -38,7 +39,9 @@ subprojects {
     
     group 'io.macgyver'
     version = "${MACGYVER_VERSION}"
-    
+   
+	mainClassName = 'io.macgyver.core.ServerMain'
+	
 	checkstyle {
 	       ignoreFailures = false 
 	       configFile = rootProject.file('config/checkstyle.xml')
