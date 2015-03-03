@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import com.github.jknack.handlebars.springmvc.SpringTemplateLoader;
 
@@ -31,6 +32,10 @@ public class MacGyverHandlebarsTemplateLoader extends SpringTemplateLoader {
 	ApplicationContext applicationContext;
 
 	Logger logger = LoggerFactory.getLogger(MacGyverHandlebarsTemplateLoader.class);
+
+	public MacGyverHandlebarsTemplateLoader(ResourceLoader loader) {
+		super(loader);
+	}
 
 	public MacGyverHandlebarsTemplateLoader(ApplicationContext applicationContext) {
 		super(applicationContext);
@@ -43,14 +48,24 @@ public class MacGyverHandlebarsTemplateLoader extends SpringTemplateLoader {
 		URL url = null;
 
 		try {
-
+			if (logger.isDebugEnabled()) {
+				logger.debug("searching for {} on filesystem...",location);
+			}
 			File resourceLocation = new File(Bootstrap.getInstance()
 					.getWebDir(), location);
 			if (resourceLocation != null && resourceLocation.exists()) {
+
 				url = resourceLocation.toURI().toURL();
+		
 			}
 
-			else {
+			if (url==null) {
+				
+				// we couldn't find a file in web dir...fall back to looking in the classpath...
+				
+				if (logger.isDebugEnabled()) {
+					logger.debug("searching for {} in classpath...",location);
+				}
 				String resourceName = "classpath:"
 						+ appendPath("web", location);
 				Resource resource = applicationContext
@@ -66,7 +81,7 @@ public class MacGyverHandlebarsTemplateLoader extends SpringTemplateLoader {
 		}
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("getResource({}): {}", location, url);
+			logger.debug("resolved template for {} to {}", location, url);
 		}
 
 		return url;
