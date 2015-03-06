@@ -37,7 +37,10 @@ public class RetrofitServiceFactory<T> extends BasicServiceFactory<T> {
 		String url = def.getProperties().getProperty("url");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(url),"url property must be set");
 		
+		
 		RetrofitBuilder builder = new RetrofitBuilder().endpoint(def.getProperties().getProperty("url"));
+		
+		builder = doCreateRetrofitBuilder(builder, def);
 		
 		String serviceInterface = def.getProperties().getProperty("serviceClassName");
 		if (Strings.isNullOrEmpty(serviceInterface)) {
