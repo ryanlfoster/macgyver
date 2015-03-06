@@ -117,7 +117,7 @@ subprojects {
 	    repositories {
 			
 	        mavenDeployer {
-	            name = 'macgyver-bintray'
+	            //name = 'macgyver-bintray'
                 if (!project.hasProperty('bintrayUser')) {
                     project.ext['bintrayUser']=""
                 }
