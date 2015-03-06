@@ -13,6 +13,7 @@
  */
 package io.macgyver.plugin.atlassian.jira;
 
+import retrofit.converter.JacksonConverter;
 import io.macgyver.core.rest.RetrofitBuilder;
 import io.macgyver.core.rest.RetrofitServiceFactory;
 import io.macgyver.core.service.ServiceDefinition;
@@ -25,10 +26,11 @@ public class JiraServiceFactory extends RetrofitServiceFactory<JiraClient>{
 	
 	}
 
+	
 	@Override
 	protected RetrofitBuilder doCreateRetrofitBuilder(RetrofitBuilder b, ServiceDefinition def) {
-		RetrofitBuilder builder = b.basicAuth(def.getProperties().getProperty("username"), def.getProperties().getProperty("password"));
-		
+		RetrofitBuilder builder = b.converter(new JacksonConverter()).basicAuth(def.getProperties().getProperty("username"), def.getProperties().getProperty("password"));
+	
 		return builder;
 	}
 
