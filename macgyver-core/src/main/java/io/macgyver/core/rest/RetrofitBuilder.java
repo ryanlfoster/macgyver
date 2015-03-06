@@ -13,12 +13,18 @@
  */
 package io.macgyver.core.rest;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.gwt.thirdparty.guava.common.base.Strings;
 import com.squareup.okhttp.Credentials;
 
 import io.macgyver.core.MacGyverConfigurationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 import io.macgyver.core.MacGyverException;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -81,6 +87,34 @@ public class RetrofitBuilder {
 	}
 
 	public RestAdapter buildRestAdatper() {
+		
+		Logger logger = null;
+		
+		if (serviceClass != null) {
+			logger = LoggerFactory.getLogger(serviceClass);
+		}
+		else if (serviceClassName!=null) {
+			logger = LoggerFactory.getLogger(serviceClassName);
+		}
+		final Logger lg = logger;
+		
+		if (lg!=null && lg.isDebugEnabled()) {
+		
+			RestAdapter.Log log = new RestAdapter.Log() {
+			
+				@Override
+				public void log(String message) {	
+				
+					lg.debug(message);
+					
+				}
+			};
+			builder = builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(log);
+		}
+		
+		
+		
+		// not thrilled with having to turn logging up regardless of whether we are logging or not
 		return builder.build();
 	}
 
@@ -96,7 +130,7 @@ public class RetrofitBuilder {
 						"serviceClass or serviceClassName must be set");
 				c = Class.forName(serviceClassName);
 			}
-
+			
 			Object object = adapter.create(c);
 			return object;
 
