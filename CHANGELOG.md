@@ -1,5 +1,10 @@
 ## Changes
 
+### 0.86.1
+* add MockWebServer (from Square OkHttp)
+* upgrade junit to 4.12
+* upgrade slf4j to 1.7.10
+
 ### 0.86.0 
 * A10 will automatically detect active/standby state
 * upgrade vaadin 7.3.10 -> 7.4.0
