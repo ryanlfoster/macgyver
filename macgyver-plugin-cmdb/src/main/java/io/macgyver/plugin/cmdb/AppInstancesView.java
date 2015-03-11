@@ -80,8 +80,7 @@ public class AppInstancesView extends VerticalLayout implements View {
 		table.addContainerProperty("lastContactTs", String.class, null);
 		table.addContainerProperty("lastContactPrettyTs",String.class,null);
 		
-		table.setWidth(1200, Unit.PIXELS);
-		table.setHeight(600, Unit.PIXELS);
+		table.setWidth("100%");
 
 		table.setColumnCollapsingAllowed(true);
 		table.setColumnCollapsed("lastContactTs", true);

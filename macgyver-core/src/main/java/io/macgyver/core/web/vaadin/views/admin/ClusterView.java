@@ -52,6 +52,8 @@ public class ClusterView extends StandardMacGyverView {
 		table.addContainerProperty("lastHeartbeatSecs", String.class, null,
 				"Last Heartbeat (Seconds Ago)", null, Align.LEFT);
 
+		table.setWidth("100%");
+
 		addComponent(table);
 
 	}

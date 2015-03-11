@@ -75,8 +75,7 @@ public class ComputeInstancesView extends VerticalLayout implements View {
 		table.addContainerProperty("name", String.class, null);
 		table.addContainerProperty("lastUpdatePrettyTs",String.class,null);
 
-		table.setWidth(1200, Unit.PIXELS);
-		table.setHeight(600, Unit.PIXELS);
+		table.setWidth("100%");
 
 		table.setColumnCollapsingAllowed(true);
 

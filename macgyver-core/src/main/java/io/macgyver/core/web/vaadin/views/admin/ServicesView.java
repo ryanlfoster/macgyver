@@ -96,10 +96,9 @@ public class ServicesView extends MacGyverView {
 		table.setContainerDataSource(container);
 
 		table.setNullSelectionAllowed(false);
-		table.setHeight("300px");
 		table.addItemClickListener(new ClickListener());
 		table.setSizeFull();
-		table.setWidth("800px");
+		table.setWidth("100%");
 		addComponent(table);
 
 		detailContainer = new IndexedJsonContainer();
@@ -109,7 +108,7 @@ public class ServicesView extends MacGyverView {
 		detailTable.setContainerDataSource(detailContainer);
 		detailTable.addStyleName("compact");
 		detailTable.addStyleName("small");
-		detailTable.setWidth("800px");
+		detailTable.setWidth("100%");
 		detailTable.setColumnHeader("propertyName", "Property Name");
 		detailTable.setColumnHeader("propertyValue", "Property Value");
 

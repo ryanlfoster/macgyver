@@ -72,7 +72,7 @@ public class ScriptsView extends VerticalLayout implements View {
 
 		table = new Table("Scripts");
 		table.setContainerDataSource(container);
-		table.setWidth("1000px");
+		table.setWidth("100%");
 
 		table.setColumnHeader("resource", "Resource");
 		table.setColumnHeader("providerType", "Provider");
