@@ -43,9 +43,9 @@ public class BeansView extends VerticalLayout implements View {
 		// Define two columns for the built-in container
 		table.addContainerProperty("name", String.class, null);
 		table.addContainerProperty("class", String.class, null);
-		table.setWidth(1200, Unit.PIXELS);
-		table.setHeight(600,Unit.PIXELS);
-		
+		table.setWidth("100%");
+		table.setHeight("100%");
+
 		table.setPageLength(table.size());
 
 		table.setColumnWidth("name", 600);
