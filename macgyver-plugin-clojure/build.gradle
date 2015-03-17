@@ -1,7 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
-apply plugin:'application'
+
+
 
 
 configurations {

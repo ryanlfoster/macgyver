@@ -1,8 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
-apply plugin:'application'
-
+apply plugin: 'application'
 
 configurations {
 	all*.exclude group: 'org.codehaus.groovy', module: 'groovy'
@@ -11,6 +10,7 @@ configurations {
     all*.exclude group: 'commons-logging'
 }
 
+mainClassName = 'io.macgyver.core.ServerMain'
 
 
 dependencies {

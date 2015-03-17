@@ -39,8 +39,6 @@ subprojects {
     
     group 'io.macgyver'
     version = "${MACGYVER_VERSION}"
-   
-	mainClassName = 'io.macgyver.core.ServerMain'
 	
 	checkstyle {
 	       ignoreFailures = false 
@@ -70,6 +68,19 @@ subprojects {
 	    test.runtimeClasspath += configurations.provided
 	}
  
+	mainClassName = 'io.macgyver.core.ServerMain'
+
+
+	// distZip and distTar are useless to us.  However, we like the application plugin
+	// on sub-projects so that we can use "gradle run"
+	distZip {
+	    //archiveName "$project.name-${project.version}.zip"
+		exclude('**/*.jar')
+	}
+	distTar {
+	    //archiveName "$project.name-${project.version}.zip"
+		exclude('**/*.jar')
+	}
 	
     repositories {
   	   mavenLocal()
@@ -104,7 +115,8 @@ subprojects {
     }
 	
 	artifacts {
-	        archives sourcesJar, javadocJar
+	        archives sourcesJar, javadocJar, jar
+		
 	}
     eclipse {
         jdt {
