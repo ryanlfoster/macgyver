@@ -1,6 +1,6 @@
 include   'macgyver-core',
 			'macgyver-plugin-ci',
-			'macgyver-plugin-jenkins',
+			'macgyver-plugin-ci-jenkins',
             'macgyver-plugin-clojure',
             'macgyver-plugin-jruby',
             'macgyver-plugin-jython',

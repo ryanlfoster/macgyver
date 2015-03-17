@@ -1,4 +1,4 @@
-package io.macgyver.plugin.jenkins.decorators;
+package io.macgyver.plugin.ci.jenkins.decorators;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import io.macgyver.core.graph.NodeInfo;
-import io.macgyver.plugin.jenkins.JenkinsScanner;
+import io.macgyver.plugin.ci.jenkins.JenkinsScanner;
 
 public class GitHubDecorator implements io.macgyver.core.graph.NodeInfo.Action {
 

@@ -11,19 +11,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.macgyver.plugin.config;
+package io.macgyver.plugin.ci.jenkins;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import io.macgyver.core.rest.RetrofitBuilder;
+import io.macgyver.core.rest.RetrofitServiceFactory;
+import io.macgyver.core.service.ServiceDefinition;
 
-import io.macgyver.plugin.jenkins.JenkinsServiceFactory;
 
-@Configuration
-public class JenkinsConfig {
+public class JenkinsServiceFactory extends RetrofitServiceFactory<JenkinsClient>{
 
+	public JenkinsServiceFactory() {
+		super("jenkins",JenkinsClient.class.getName());
 	
-	@Bean
-	JenkinsServiceFactory jenkinsServiceFactory() {
-		return new JenkinsServiceFactory();
 	}
+
+	@Override
+	protected RetrofitBuilder doCreateRetrofitBuilder(RetrofitBuilder b,
+			ServiceDefinition def) {
+		return b;
+	}
+
 }

@@ -30,6 +30,7 @@ import org.jclouds.ec2.compute.EC2ComputeService;
 import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.junit.Assume;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.springframework.boot.logging.log4j.Log4JLoggingSystem;
 
 import com.google.common.collect.ImmutableSet;
@@ -37,6 +38,7 @@ import com.google.common.collect.ImmutableSet;
 public class TestJClouds extends MacGyverIntegrationTest {
 
 	@Test
+	@Ignore // TODO determine if we're online before running
 	public void testX() {
 
 		String awsAccessKey = getPrivateProperty("aws.accessKey");

@@ -1,4 +1,4 @@
-package io.macgyver.plugin.jenkins;
+package io.macgyver.plugin.ci.jenkins;
 
 import io.macgyver.neorx.rest.NeoRxClient;
 import io.macgyver.plugin.ci.CIScanner;

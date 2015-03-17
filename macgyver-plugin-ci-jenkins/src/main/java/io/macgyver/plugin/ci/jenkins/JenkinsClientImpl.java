@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.macgyver.plugin.jenkins;
+package io.macgyver.plugin.ci.jenkins;
 
 import io.macgyver.core.rest.RestException;
 import io.macgyver.core.rest.UrlBuilder;
@@ -28,8 +28,6 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import sun.text.normalizer.UTF16;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

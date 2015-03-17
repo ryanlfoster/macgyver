@@ -1,8 +1,11 @@
-package io.macgyver.plugin.jenkins;
+package io.macgyver.plugin.ci.jenkins;
 
 import io.macgyver.core.graph.NodeInfo;
 import io.macgyver.neorx.rest.NeoRxClient;
-import io.macgyver.plugin.jenkins.decorators.GitHubDecorator;
+import io.macgyver.plugin.ci.jenkins.JenkinsClient;
+import io.macgyver.plugin.ci.jenkins.JenkinsClientBuilder;
+import io.macgyver.plugin.ci.jenkins.JenkinsScanner;
+import io.macgyver.plugin.ci.jenkins.decorators.GitHubDecorator;
 
 import java.io.IOException;
 
