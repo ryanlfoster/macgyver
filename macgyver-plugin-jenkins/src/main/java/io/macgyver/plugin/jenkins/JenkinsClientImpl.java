@@ -29,12 +29,16 @@ import org.jdom2.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sun.text.normalizer.UTF16;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.hash.Hashing;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -48,12 +52,12 @@ public class JenkinsClientImpl implements JenkinsClient {
 	Logger logger = LoggerFactory.getLogger(JenkinsClientImpl.class);
 	OkHttpClient client = new OkHttpClient();
 
-	String urlBase;
+	private String urlBase;
 
-	String username;
-	String password;
+	private String username;
+	private String password;
 
-	JenkinsClientImpl(String urlBase, String username, String password) {
+	protected JenkinsClientImpl(String urlBase, String username, String password) {
 		this.urlBase = urlBase;
 		this.username = username;
 		this.password = password;
@@ -353,8 +357,15 @@ public class JenkinsClientImpl implements JenkinsClient {
 	@Override
 	public void cancelQuietDown() {
 		postWithoutResult("cancelQuietDown");
-
+	}
 	
+	public String getServerId() {
+		return Hashing.sha1().hashString(getServerUrl(), Charsets.UTF_8).toString();
+	}
+
+	@Override
+	public String getServerUrl() {
+		return urlBase;
 	}
 
 }

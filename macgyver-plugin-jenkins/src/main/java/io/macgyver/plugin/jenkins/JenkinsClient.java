@@ -27,9 +27,13 @@ public interface JenkinsClient {
 	 */
 	List<String> getJobNames();
 	
+	String getServerId();
+	
 	JsonNode getJson(String path);
 
 	JsonNode getServerInfo();
+	
+	String getServerUrl();
 	
 	JsonNode getJob(String jobName);
 
