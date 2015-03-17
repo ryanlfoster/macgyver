@@ -3,16 +3,12 @@ package io.macgyver.plugin.ci.jenkins;
 import io.macgyver.neorx.rest.NeoRxClient;
 import io.macgyver.plugin.ci.CIScanner;
 
-import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 
@@ -71,9 +67,9 @@ public class JenkinsScanner extends CIScanner<JenkinsClient> {
 
 
 	
-		String cypher = "match (c:CIServer {macId: {macId}}) MERGE (c)-[:CONTAINS]->(j:CIJob {name: {jobName}}) "
-				+ "ON CREATE  SET j.createTs=timestamp(),j.updateTs=timestamp(),j.url={url} "
-				+ "ON MATCH   SET j.url={url}, j.updateTs=timestamp() return j,ID(j) as id";
+		String cypher = "match (c:CIServer {macId: {macId}}) MERGE (c)-[r:CONTAINS]->(j:CIJob {name: {jobName}}) "
+				+ "ON CREATE  SET j.createTs=timestamp(),r.createTs=timestamp(),j.updateTs=timestamp(),r.updateTs=timestamp(),j.url={url} "
+				+ "ON MATCH   SET j.url={url}, j.updateTs=timestamp(),r.updateTs=timestamp() return j,ID(j) as id";
 
 		JsonNode x = getNeoRxClient()
 				.execCypher(cypher, "macId", masterNode.get("macId").asText(),

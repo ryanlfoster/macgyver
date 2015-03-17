@@ -26,62 +26,76 @@ public class GitHubDecorator implements io.macgyver.core.graph.NodeInfo.Action {
 				.compile(
 						"//com.coravy.hudson.plugins.github.GithubProjectProperty/projectUrl/text()",
 						Filters.text());
-		
-	
-		
-		JenkinsScanner c = ((JenkinsScanner)t1.getUserData());
-		
-		Document d = c.getServiceClient().getJobConfig(t1.getNode().get("name").asText());
 
-		
-		Optional<String> cloneUrl = extractText(d, "//hudson.plugins.git.UserRemoteConfig/url/text()");
-		
-		Optional<String> projectUrl = extractText(d, "//com.coravy.hudson.plugins.github.GithubProjectProperty/projectUrl/text()");
-		
+		JenkinsScanner c = ((JenkinsScanner) t1.getUserData());
+
+		Document d = c.getServiceClient().getJobConfig(
+				t1.getNode().get("name").asText());
+
+		Optional<String> cloneUrl = extractText(d,
+				"//hudson.plugins.git.UserRemoteConfig/url/text()");
+
+		Optional<String> projectUrl = extractText(d,
+				"//com.coravy.hudson.plugins.github.GithubProjectProperty/projectUrl/text()");
+
 		List<String> tmp = Lists.newArrayList();
-		
+
 		ObjectNode params = new ObjectMapper().createObjectNode();
 		if (projectUrl.isPresent()) {
 			tmp.add("j.githubProjectUrl={projectUrl}");
-			params.put("projectUrl", projectUrl.get());
+			params.put("projectUrl", stripTrailingSlash(projectUrl.get()));
 		}
 		if (cloneUrl.isPresent()) {
 			tmp.add("j.githubCloneUrl={cloneUrl}");
-			params.put("cloneUrl", cloneUrl.get());
+			params.put("cloneUrl", stripTrailingSlash(cloneUrl.get()));
 		}
-		
+
 		if (!tmp.isEmpty()) {
-			
+
 			String clause = Joiner.on(", ").join(tmp);
-			System.out.println(clause);
-			String cypher = "match (j:CIJob) where ID(j)={nodeId} SET "+clause+" return j";
+			
+			String cypher = "match (j:CIJob) where ID(j)={nodeId} SET "
+					+ clause + " return j";
 			params.put("nodeId", t1.getNodeId());
 			t1.getNeoRxClient().execCypher(cypher, params);
-			
-			
+
 		}
-		
+
+		if (projectUrl.isPresent()) {
+			String cypher = "match (j:CIJob) where ID(j)={nodeId} MERGE (j)-[r:BUILDS]->(s:SCMRepo {url:{projectUrl}, type:'github'})"
+					+ " ON CREATE set r.createTs=timestamp(), s.createTs=timestamp(), r.updateTs=timestamp(), s.updateTs=timestamp() "
+					+ " ON MATCH  set r.updateTs=timestamp(), s.updateTs=timestamp()";
+			t1.getNeoRxClient().execCypher(cypher, params);
+		} else if (cloneUrl.isPresent()) {
+			String url = cloneUrl.get();
+		}
+
 	}
-	
+
 	public Optional<String> extractText(Document d, String xpath) {
-		XPathExpression<Text> expression = XPathFactory
-				.instance()
-				.compile(
-						xpath,
-						Filters.text());	
-		return getText(expression.evaluate(d));	
+		XPathExpression<Text> expression = XPathFactory.instance().compile(
+				xpath, Filters.text());
+		return getText(expression.evaluate(d));
 	}
-	
-	
+
 	Optional<String> getText(List<Text> list) {
-		if (list==null || list.isEmpty()) {
+		if (list == null || list.isEmpty()) {
 			return Optional.absent();
 		}
 		Text text = list.get(0);
-		if (text==null) {
+		if (text == null) {
 			return Optional.absent();
 		}
 		return Optional.fromNullable(text.getText());
+	}
+
+	String stripTrailingSlash(String input) {
+		if (input != null) {
+			while (!input.isEmpty() && input.charAt(input.length() - 1) == '/') {
+				input = input.substring(0, input.length() - 1);
+			}
+		}
+		return input;
 	}
 
 }
