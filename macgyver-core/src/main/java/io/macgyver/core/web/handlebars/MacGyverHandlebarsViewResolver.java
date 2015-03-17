@@ -29,7 +29,7 @@ public class MacGyverHandlebarsViewResolver extends HandlebarsViewResolver {
 		super();
 		
 		
-		setCache(false);  // need way to set this dynamically
+		setCache(true);  // need way to set this dynamically
 		
 	}
 
