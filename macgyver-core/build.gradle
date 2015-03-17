@@ -40,6 +40,7 @@ dependencies {
 	
 	compile 'org.aspectj:aspectjweaver:1.8.5'
 	
+	compile 'jaxen:jaxen:1.1.6'  // needed???
     
     compile 'com.thoughtworks.proxytoys:proxytoys:1.0'
     compile 'cglib:cglib-nodep:3.1'

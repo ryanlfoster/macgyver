@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.macgyver.plugin.jenkins;
+package io.macgyver.plugin.ci.jenkins;
 
 import java.util.List;
 import java.util.Map;
@@ -27,9 +27,13 @@ public interface JenkinsClient {
 	 */
 	List<String> getJobNames();
 	
+	String getServerId();
+	
 	JsonNode getJson(String path);
 
 	JsonNode getServerInfo();
+	
+	String getServerUrl();
 	
 	JsonNode getJob(String jobName);
 

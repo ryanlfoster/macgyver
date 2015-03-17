@@ -16,8 +16,8 @@ package io.macgyver.plugin.newrelic;
 import java.io.IOException;
 
 import io.macgyver.core.ServiceInvocationException;
+import io.macgyver.test.InternetAccess;
 import io.macgyver.test.MacGyverIntegrationTest;
-
 
 import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
@@ -29,13 +29,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 
+import java.net.InetAddress;
 public class NewRelicClientTest extends MacGyverIntegrationTest {
 
 	String apiKey;
 
 	@org.junit.Before
 	public void checkIfKeyIsAvailable() {
+
 		apiKey = getPrivateProperty("newrelic.apiKey");
+		Assert.assertTrue(InternetAccess.isPublicDNSAvailable());
 	}
 
 	@Test
