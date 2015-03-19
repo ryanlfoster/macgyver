@@ -40,6 +40,9 @@ public class UrlBuilder {
 		this.base = baseUrl;
 	}
 
+	public UrlBuilder url(String url) {
+		return this;
+	}
 	public UrlBuilder base(String base) {
 		this.base = base;
 		return this;
@@ -90,7 +93,7 @@ public class UrlBuilder {
 
 	public String build() {
 
-		Preconditions.checkState(base != null, "base() must be called");
+		Preconditions.checkState(base != null, "base url not set");
 		String url = base;
 		try {
 			for (String append : parts) {

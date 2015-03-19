@@ -16,15 +16,18 @@ package io.macgyver.core.test;
 import java.util.Properties;
 import java.util.UUID;
 
+import com.google.common.base.Preconditions;
+
 import io.macgyver.core.MacGyverException;
 import io.macgyver.core.service.ServiceDefinition;
 import io.macgyver.core.service.ServiceFactory;
 import io.macgyver.core.service.ServiceRegistry;
 
-
 /**
- * StandaloneServiceBuilder allows services to be constructed without the entire MacGyver runtime.  
- * Its primary purpose is to facilitate non-integrated/mocked unit testing of services.
+ * StandaloneServiceBuilder allows services to be constructed without the entire
+ * MacGyver runtime. Its primary purpose is to facilitate non-integrated/mocked
+ * unit testing of services.
+ * 
  * @author rschoening
  *
  */
@@ -35,6 +38,9 @@ public class StandaloneServiceBuilder {
 	Class<? extends ServiceFactory> serviceFactoryClass;
 	Properties props = new Properties();
 
+	String id;
+	ServiceFactory serviceFactory;
+	
 	public static StandaloneServiceBuilder forServiceFactory(
 			Class<? extends ServiceFactory> clazz) {
 		StandaloneServiceBuilder b = new StandaloneServiceBuilder();
@@ -47,22 +53,41 @@ public class StandaloneServiceBuilder {
 		return this;
 	}
 
-	public <T> T build(Class<T> type) {
+	public <T> T build(Class<T> t) {
+		return (T) build();
+	}
+	
+	public Object build() {
+		doIt();
+		return serviceFactory.get(id);
+	}
 
+	protected void doIt() {
 		try {
+			if (id!=null) {
+				return;
+			}
+			id = UUID.randomUUID().toString();
 
-			String id = UUID.randomUUID().toString();
+			serviceFactory = serviceFactoryClass.newInstance();
 
-			ServiceFactory sf = serviceFactoryClass.newInstance();
-
-			ServiceDefinition def = new ServiceDefinition(id, id, props, sf);
+			ServiceDefinition def = new ServiceDefinition(id, id, props, serviceFactory);
 			registry.addServiceDefinition(def);
 
-			sf.setServiceRegistry(registry);
+			serviceFactory.setServiceRegistry(registry);
 
-			return (T) sf.get(id);
+			Object x = serviceFactory.get(id);
+			
+
 		} catch (IllegalAccessException | InstantiationException e) {
 			throw new MacGyverException(e);
-		}
+		}	
 	}
+	public Object buildCollaborator(String collab) {
+		doIt();
+		return serviceFactory.get(id+collab);
+	}
+
+		
+	
 }

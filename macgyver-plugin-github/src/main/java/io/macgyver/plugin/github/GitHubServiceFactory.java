@@ -14,15 +14,24 @@
 package io.macgyver.plugin.github;
 
 import io.macgyver.core.ConfigurationException;
+import io.macgyver.core.rest.OkRest;
 import io.macgyver.core.service.BasicServiceFactory;
 import io.macgyver.core.service.ServiceDefinition;
+import io.macgyver.core.service.ServiceRegistry;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.util.Properties;
+import java.util.Set;
 
 import org.kohsuke.github.GitHub;
 
 import com.google.gwt.thirdparty.guava.common.base.Strings;
+import com.hazelcast.security.Credentials;
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 public class GitHubServiceFactory extends BasicServiceFactory<GitHub> {
 
@@ -40,37 +49,35 @@ public class GitHubServiceFactory extends BasicServiceFactory<GitHub> {
 			String password = props.getProperty("password");
 
 			boolean useToken = Strings.isNullOrEmpty(oauthToken) == false;
-			boolean useUsernamePassword = (Strings.isNullOrEmpty(username)==false) && (Strings.isNullOrEmpty(password)==false);
-			
+			boolean useUsernamePassword = (Strings.isNullOrEmpty(username) == false)
+					&& (Strings.isNullOrEmpty(password) == false);
+
 			String message = "connecting to {} using {}";
-			
+
 			GitHub gh = null;
 			if (url != null) {
-			
+
 				if (useToken) {
-					logger.info(message,url,"oauth");
+					logger.info(message, url, "oauth");
 					gh = GitHub.connectToEnterprise(url, oauthToken);
-				}
-				else if (useUsernamePassword) {
-					logger.info(message,url,"username/password");
+				} else if (useUsernamePassword) {
+					logger.info(message, url, "username/password");
 					gh = GitHub.connectToEnterprise(url, username, password);
-				}
-				else {
-					throw new ConfigurationException("connection to GitHub enterprise requires either oauth token or usernmae/password");
+				} else {
+					throw new ConfigurationException(
+							"connection to GitHub enterprise requires either oauth token or usernmae/password");
 				}
 
 			} else {
-			
+
 				if (useToken) {
-					logger.info(message,"api.github.com","oauth");
+					logger.info(message, "api.github.com", "oauth");
 					gh = GitHub.connectUsingOAuth(oauthToken);
-				}
-				else if (useUsernamePassword) {
-					logger.info(message,"api.github.com","username/password");
+				} else if (useUsernamePassword) {
+					logger.info(message, "api.github.com", "username/password");
 					gh = GitHub.connectUsingPassword(username, password);
-				}
-				else {
-					logger.info(message,"api.github.com","anonymous");
+				} else {
+					logger.info(message, "api.github.com", "anonymous");
 					gh = GitHub.connectAnonymously();
 				}
 
@@ -80,6 +87,80 @@ public class GitHubServiceFactory extends BasicServiceFactory<GitHub> {
 			throw new io.macgyver.core.ConfigurationException(
 					"problem creating GitHub client", e);
 		}
+	}
+
+	@Override
+	protected void doCreateCollaboratorInstances(ServiceRegistry registry,
+			ServiceDefinition primaryDefinition, Object primaryBean) {
+
+		OkHttpClient c = new OkHttpClient();
+		GitHub h;
+	
+		final String oauthToken = primaryDefinition.getProperties()
+				.getProperty("oauthToken");
+		final String username = primaryDefinition.getProperties().getProperty(
+				"username");
+		final String password = primaryDefinition.getProperties().getProperty(
+				"password");
+		String url =  primaryDefinition.getProperties().getProperty(
+				"url");
+		if (!Strings.isNullOrEmpty(oauthToken)) {
+			c.setAuthenticator(new Authenticator() {
+
+				@Override
+				public Request authenticateProxy(Proxy arg0, Response arg1)
+						throws IOException {
+
+					return null;
+				}
+
+				@Override
+				public Request authenticate(Proxy arg0, Response arg1)
+						throws IOException {
+					String credential = com.squareup.okhttp.Credentials.basic(
+							oauthToken, "x-oauth-token");
+					return arg1.request().newBuilder()
+							.header("Authorization", credential).build();
+				}
+			});
+
+		} else if (!Strings.isNullOrEmpty(username)) {
+			c.setAuthenticator(new Authenticator() {
+
+				@Override
+				public Request authenticateProxy(Proxy arg0, Response arg1)
+						throws IOException {
+
+					return null;
+				}
+
+				@Override
+				public Request authenticate(Proxy arg0, Response arg1)
+						throws IOException {
+					String credential = com.squareup.okhttp.Credentials.basic(
+							username, password);
+					return arg1.request().newBuilder()
+							.header("Authorization", credential).build();
+				}
+			});
+		}
+
+		if (Strings.isNullOrEmpty(url)) {
+			url = "https://api.github.com";
+		}
+		OkRest rest = new OkRest(c).url(url);
+		registry.registerCollaborator(primaryDefinition.getName() + "Api",
+				rest);
+
+	}
+
+	@Override
+	public void doCreateCollaboratorDefinitions(Set<ServiceDefinition> defSet,
+			ServiceDefinition def) {
+		ServiceDefinition templateDef = new ServiceDefinition(def.getName()
+				+ "Api", def.getName(), def.getProperties(), this);
+		defSet.add(templateDef);
+
 	}
 
 }

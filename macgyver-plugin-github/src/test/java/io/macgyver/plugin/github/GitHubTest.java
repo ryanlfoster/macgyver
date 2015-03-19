@@ -13,11 +13,14 @@
  */
 package io.macgyver.plugin.github;
 
+import io.macgyver.core.rest.OkRest;
 import io.macgyver.core.service.ServiceRegistry;
+import io.macgyver.core.test.StandaloneServiceBuilder;
 import io.macgyver.test.MacGyverIntegrationTest;
 
 import java.io.IOException;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kohsuke.github.GitHub;
@@ -41,6 +44,22 @@ public class GitHubTest extends MacGyverIntegrationTest {
 		Assert.assertNotNull(githubServiceFactory);
 	}
 	
+	
+	@Test
+	public void testIt() throws IOException {
+		StandaloneServiceBuilder sb = StandaloneServiceBuilder.forServiceFactory(GitHubServiceFactory.class);
+		
+		GitHub gh = (GitHub) sb.build();
+		
+		Assertions.assertThat(gh).isNotNull();
+		
+		
+		OkRest x = (OkRest) sb.buildCollaborator("Api");
+		
+		Assertions.assertThat(x.getUrl()).isEqualTo("https://api.github.com");
+		
+		
+	}
 
 
 }
