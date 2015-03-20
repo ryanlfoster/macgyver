@@ -14,6 +14,7 @@
 package io.macgyver.plugin.github;
 
 import io.macgyver.core.ConfigurationException;
+import io.macgyver.core.rest.BasicAuthInterceptor;
 import io.macgyver.core.rest.OkRest;
 import io.macgyver.core.service.BasicServiceFactory;
 import io.macgyver.core.service.ServiceDefinition;
@@ -105,50 +106,23 @@ public class GitHubServiceFactory extends BasicServiceFactory<GitHub> {
 		String url =  primaryDefinition.getProperties().getProperty(
 				"url");
 		if (!Strings.isNullOrEmpty(oauthToken)) {
-			c.setAuthenticator(new Authenticator() {
-
-				@Override
-				public Request authenticateProxy(Proxy arg0, Response arg1)
-						throws IOException {
-
-					return null;
-				}
-
-				@Override
-				public Request authenticate(Proxy arg0, Response arg1)
-						throws IOException {
-					String credential = com.squareup.okhttp.Credentials.basic(
-							oauthToken, "x-oauth-token");
-					return arg1.request().newBuilder()
-							.header("Authorization", credential).build();
-				}
-			});
+			logger.info("using oauth");
+			c.interceptors().add(new BasicAuthInterceptor(oauthToken, "x-oauth-token"));
 
 		} else if (!Strings.isNullOrEmpty(username)) {
-			c.setAuthenticator(new Authenticator() {
+			logger.info("using username/password auth for OkRest client: "+username+"/"+password);
+			c.interceptors().add(new BasicAuthInterceptor(username, password));
 
-				@Override
-				public Request authenticateProxy(Proxy arg0, Response arg1)
-						throws IOException {
-
-					return null;
-				}
-
-				@Override
-				public Request authenticate(Proxy arg0, Response arg1)
-						throws IOException {
-					String credential = com.squareup.okhttp.Credentials.basic(
-							username, password);
-					return arg1.request().newBuilder()
-							.header("Authorization", credential).build();
-				}
-			});
+		}
+		else {
+			logger.info("using anonymous auth");
 		}
 
 		if (Strings.isNullOrEmpty(url)) {
 			url = "https://api.github.com";
 		}
 		OkRest rest = new OkRest(c).url(url);
+		
 		registry.registerCollaborator(primaryDefinition.getName() + "Api",
 				rest);
 

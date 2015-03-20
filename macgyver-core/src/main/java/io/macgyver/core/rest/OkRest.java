@@ -10,15 +10,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.ning.http.client.RequestBuilder;
 import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.thoughtworks.proxy.toys.decorate.Decorator;
 
 public class OkRest {
 
@@ -41,7 +46,7 @@ public class OkRest {
 		}
 
 		public Response execute() throws IOException {
-			Call c = getClient().newCall(okBuilder.build());
+			Call c = getOkHttpClient().newCall(okBuilder.build());
 			return c.execute();
 		}
 
@@ -68,6 +73,16 @@ public class OkRest {
 		public InvocationBuilder delete(RequestBody body) {
 			return new InvocationBuilder(okBuilder.delete());
 		}
+		public InvocationBuilder patch(RequestBody body) {
+			return new InvocationBuilder(okBuilder.patch(body));
+		}
+		public InvocationBuilder head(RequestBody body) {
+			return new InvocationBuilder(okBuilder.head());
+		}
+		
+		public InvocationBuilder method(String method, RequestBody body) {
+			return new InvocationBuilder(okBuilder.method(method,body));
+		}
 	}
 
 	public OkRest() {
@@ -86,10 +101,19 @@ public class OkRest {
 
 		this.client = c;
 		this.url = url;
+		
 		if (qp != null) {
 			this.queryParameters.putAll(qp);
 		}
+
+
 	}
+	
+	public OkRest(OkRest from) {
+		this(from.client, from.url,from.queryParameters);
+		Preconditions.checkNotNull(from);
+	}
+	
 
 	public OkRest queryParameter(String key, Object... vals) {
 
@@ -100,31 +124,40 @@ public class OkRest {
 				mm.put(key, x.toString());
 			}
 		}
-		OkRest copy = new OkRest(client, url, mm);
+		OkRest copy = new OkRest(this);
+		copy.queryParameters = mm;
+	
 		return copy;
 
 	}
 
 	public OkRest path(String path) {
-		return new OkRest(client, new UrlBuilder(url).path(path).build(),
-				queryParameters);
+
+		OkRest copy = new OkRest(this);
+		copy.url = new UrlBuilder(url).path(path).build();
+		return copy;
 	}
 
 	public OkRest url(String url) {
-		return new OkRest(client, url, queryParameters);
+	
+		OkRest copy = new OkRest(this);
+		copy.url = url;
+		return copy;
 	}
 
 	public InvocationBuilder request() {
 		String urlWithQueryString = toUrlWithQueryString();
-		InvocationBuilder b = new InvocationBuilder(
-				new Request.Builder().url(urlWithQueryString));
+		Request.Builder rb = new Request.Builder();
+		rb = rb.url(urlWithQueryString);
+		InvocationBuilder b = new InvocationBuilder(rb);
+
 		return b;
 	}
 
 	public String getUrl() {
 		return url;
 	}
-	public OkHttpClient getClient() {
+	public OkHttpClient getOkHttpClient() {
 		return client;
 	}
 
@@ -159,4 +192,7 @@ public class OkRest {
 			throw new IllegalArgumentException(e);
 		}
 	}
+	
+	
+
 }
