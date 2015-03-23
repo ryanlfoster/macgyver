@@ -176,5 +176,61 @@ subprojects {
 	}
     }
     
+    
+}
+
+task createPlugin << {
+    def pluginName = System.getProperty("name")
+    
+    if (pluginName==null || pluginName.trim().length()==0) {
+        throw new GradleException("-Dname=<pluginName>")
+    }
+    def javaPluginName = pluginName.replace("-","").toLowerCase()
+    def newProjectDir = new File(project.projectDir,"macgyver-plugin-${pluginName}")
+    if (newProjectDir.exists()) {
+        throw new GradleException("plugin project already exists: ${newProjectDir}")
+    }
+    def pluginPackageDir = new File(newProjectDir,"src/main/java/io/macgyver/plugin/${javaPluginName}")
+    def pluginResourceDir = new File(newProjectDir,"src/main/resources")
+    def pluginTestPackageDir = new File(newProjectDir,"src/test/java/io/macgyver/plugin/${javaPluginName}")
+    def pluginTestResourceDir = new File(newProjectDir,"src/test/resources")
+    pluginPackageDir.mkdirs()
+    pluginResourceDir.mkdirs()
+    pluginTestPackageDir.mkdirs()
+    pluginTestResourceDir.mkdirs()
+    new File(pluginPackageDir,".gitignore") << ""
+    new File(pluginResourceDir,".gitignore") << ""
+    new File(pluginTestPackageDir,".gitignore") << ""
+    new File(pluginTestResourceDir,".gitignore") << ""
+    def buildGradleContents = """
+    
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'application'
+
+configurations {
+    all*.exclude group: 'org.codehaus.groovy', module: 'groovy'
+    all*.exclude group: 'log4j'
+    all*.exclude group: 'xml-apis'
+    all*.exclude group: 'commons-logging'
+}
+
+
+mainClassName = 'io.macgyver.core.ServerMain'
+
+dependencies {  
+    
+    testCompile project(':macgyver-test')
+    compile project(':macgyver-core')
+    
+}
+"""
+
+new File(newProjectDir,"build.gradle") << buildGradleContents
+def x = new File(project.projectDir,"settings.gradle").text.replace("macgyver-core',","macgyver-core',\n    'macgyver-plugin-${pluginName}',")
+
+new File(project.projectDir,"settings.gradle").text = x
+
 }
 
