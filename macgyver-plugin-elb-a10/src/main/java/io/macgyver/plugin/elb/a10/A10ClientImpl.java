@@ -89,13 +89,8 @@ public class A10ClientImpl implements A10Client {
 
 		setTokenCacheDuration(DEFAULT_TOKEN_CACHE_DURATION,
 				DEFAULT_TOKEN_CACHE_DURATION_TIME_UNIT);
-		
+		logger.info("url: {}", this.url);
 
-	}
-
-	protected List<String> getMethodsWithBrokenJson() {
-		return ImmutableList.of("system.performance.get",
-				"system.information.get", "system.device_info.get");
 	}
 
 	public void setUsername(String username) {
@@ -113,8 +108,6 @@ public class A10ClientImpl implements A10Client {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
-	
 
 	public void setTokenCacheDuration(int duration, TimeUnit timeUnit) {
 		Preconditions.checkArgument(duration >= 0, "duration must be >=0");
@@ -136,34 +129,30 @@ public class A10ClientImpl implements A10Client {
 	void throwExceptionIfNecessary(Element element) {
 		if (element.getName().equals("response")) {
 			String status = element.getAttributeValue("status");
-			
+
 			if (status.equalsIgnoreCase("ok")) {
 				// ok
-			}
-			else if (status.equalsIgnoreCase("fail")) {
+			} else if (status.equalsIgnoreCase("fail")) {
 				String code = "";
 				String msg = "";
-				
-				
+
 				Element error = element.getChild("error");
-				if (error!=null) {
+				if (error != null) {
 					code = error.getAttributeValue("code");
 					msg = error.getAttributeValue("msg");
 				}
-				 
-				throw new A10RemoteException(code,msg);
+
+				throw new A10RemoteException(code, msg);
+			} else {
+				logger.warn("unexpected status: {}", status);
 			}
-			else {
-				logger.warn("unexpected status: {}",status);
-			}
-			
-			
+
+		} else {
+			logger.warn("unexpected response element: {}", element.getName());
 		}
-		else {
-			logger.warn("unexpected response element: {}",element.getName());
-		}
-		
+
 	}
+
 	void throwExceptionIfNecessary(ObjectNode response) {
 
 		if (response.has("response") && response.get("response").has("err")) {
@@ -181,14 +170,34 @@ public class A10ClientImpl implements A10Client {
 
 	}
 
-	protected String authenticate() {
+	/**
+	 * This probably does not have a lot of practical value outside of testing.
+	 * By forcibly setting the the authentication token, we can prevent an
+	 * implicit call to authenticate(). This helps simplify mocked server
+	 * exchanges.
+	 * 
+	 * @param token
+	 */
+	public void setAuthToken(String token) {
+		tokenCache.put(A10_AUTH_TOKEN_KEY, token);
+	}
+
+	/**
+	 * Performs an authentication, caches the resulting authentication token,
+	 * and returns it.
+	 * 
+	 * @return
+	 */
+	public String authenticate() {
 
 		try {
 			FormEncodingBuilder b = new FormEncodingBuilder();
 			b = b.add("username", username).add("password", password)
 					.add("format", "json").add("method", "authenticate");
-
-			Request r = new Request.Builder().url(getUrl()).addHeader("Accept", "application/json").post(b.build())
+	
+			
+			Request r = new Request.Builder().url(getUrl())
+					.addHeader("Accept", "application/json").post(b.build())
 					.build();
 			Response resp = getClient().newCall(r).execute();
 
@@ -225,10 +234,6 @@ public class A10ClientImpl implements A10Client {
 
 	}
 
-
-	
-
-
 	protected Map<String, String> toMap(String... args) {
 		Map<String, String> m = Maps.newHashMap();
 		if (args == null || args.length == 0) {
@@ -248,8 +253,9 @@ public class A10ClientImpl implements A10Client {
 
 	@Deprecated
 	public ObjectNode invoke(String method, String... args) {
-		return invokeJson(method,args);
+		return invokeJson(method, args);
 	}
+
 	@Override
 	public ObjectNode invokeJson(String method, String... args) {
 		return invoke(method, toMap(args));
@@ -262,9 +268,9 @@ public class A10ClientImpl implements A10Client {
 
 	@Deprecated
 	public ObjectNode invoke(String method, Map<String, String> params) {
-		return invokeJson(method,params);
+		return invokeJson(method, params);
 	}
-	
+
 	public ObjectNode invokeJson(String method, Map<String, String> params) {
 		if (params == null) {
 			params = Maps.newConcurrentMap();
@@ -286,54 +292,7 @@ public class A10ClientImpl implements A10Client {
 		return invokeXml(copy);
 	}
 
-	protected Optional<ObjectNode> patchBrokenResponse(Response response,
-			String method) {
-		if (method == null) {
-			return Optional.absent();
-		}
-		try {
-			// The A10 lies about the content of the response in some cases. It
-			// will
-			// set JSON content-type header
-			// but return an XML payload. We try to patch this up here.
-			if (getMethodsWithBrokenJson().contains(method)) {
-
-				String bodyContent = response.body().string();
-				org.w3c.dom.Document doc = DocumentBuilderFactory
-						.newInstance()
-						.newDocumentBuilder()
-						.parse(new org.xml.sax.InputSource(new StringReader(
-								bodyContent)));
-				Node n = doc.getDocumentElement().getFirstChild();
-				NodeList nl = n.getChildNodes();
-
-				ObjectNode top = mapper.createObjectNode();
-				ObjectNode x = mapper.createObjectNode();
-				top.set(n.getNodeName(), x);
-
-				for (int i = 0; i < nl.getLength(); i++) {
-					Node item = nl.item(i);
-					String val = item.getTextContent();
-					try {
-						long longVal = Long.parseLong(val);
-						x.put(item.getNodeName(), longVal);
-					} catch (Exception e) {
-						x.put(item.getNodeName(), val);
-					}
-
-				}
-
-				return Optional.of(top);
-
-			}
-
-			else {
-				return Optional.absent();
-			}
-		} catch (ParserConfigurationException | IOException | SAXException e) {
-			throw new ElbException(e);
-		}
-	}
+	
 
 	protected Element parseXmlResponse(Response response, String method) {
 		try {
@@ -351,11 +310,7 @@ public class A10ClientImpl implements A10Client {
 
 			String contentType = response.header("Content-type");
 
-			Optional<ObjectNode> patchedResponse = patchBrokenResponse(
-					response, method);
-			if (patchedResponse.isPresent()) {
-				return patchedResponse.get();
-			}
+			
 
 			// aXAPI is very sketchy with regard to content type of response.
 			// Sometimes we get XML/HTML back even though
@@ -381,7 +336,7 @@ public class A10ClientImpl implements A10Client {
 			throw new ElbException(e);
 		}
 	}
-	
+
 	protected ObjectNode invoke(Map<String, String> x) {
 
 		try {
@@ -432,29 +387,7 @@ public class A10ClientImpl implements A10Client {
 
 	}
 
-	@Override
-	public ObjectNode getDeviceInfo() {
-		return invoke("system.device_info.get");
-	}
-
-	@Override
-	public ObjectNode getSystemInfo() {
-		return invoke("system.information.get");
-	}
-
-	@Override
-	public ObjectNode getSystemPerformance() {
-		return invoke("system.performance.get");
-	}
-
-	@Override
-	public ObjectNode getServiceGroupAll() {
-
-		ObjectNode obj = invoke("slb.service_group.getAll");
-
-		return obj;
-
-	}
+	
 
 	AtomicReference<OkHttpClient> clientReference = new AtomicReference<OkHttpClient>();
 
@@ -463,6 +396,7 @@ public class A10ClientImpl implements A10Client {
 		// not guaranteed to be singleton, but close enough
 		if (clientReference.get() == null) {
 			OkHttpClient c = new OkHttpClient();
+			
 			c.setConnectTimeout(20, TimeUnit.SECONDS);
 
 			c.setHostnameVerifier(withoutHostnameVerification());
@@ -543,7 +477,7 @@ public class A10ClientImpl implements A10Client {
 		list.add(new Builder(ConnectionSpec.MODERN_TLS).tlsVersions(
 				TlsVersion.TLS_1_0).build()); // This is essential
 		list.add(ConnectionSpec.MODERN_TLS);
-
+		list.add(ConnectionSpec.CLEARTEXT);
 		return ImmutableList.copyOf(list);
 	}
 
@@ -552,6 +486,11 @@ public class A10ClientImpl implements A10Client {
 		try {
 			Element e = invokeXml("ha.group.fetchStatistics");
 
+			Element statusListElement = e.getChild("ha_group_status_list");
+			if (statusListElement == null
+					|| statusListElement.getChildren().isEmpty()) {
+				return true;
+			}
 			String x = e.getChild("ha_group_status_list").getChildren().get(0)
 					.getChildTextTrim("local_status");
 			return Strings.nullToEmpty(x).equals("1");
@@ -587,5 +526,4 @@ public class A10ClientImpl implements A10Client {
 		}
 	}
 
-	
 }
