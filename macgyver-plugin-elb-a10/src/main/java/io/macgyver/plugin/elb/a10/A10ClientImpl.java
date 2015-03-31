@@ -346,8 +346,11 @@ public class A10ClientImpl implements A10Client {
 					"method argument must be passed");
 
 			FormEncodingBuilder fb = new FormEncodingBuilder()
-					.add("session_id", getAuthToken()).add("format", "json")
-					.add("method", method);
+					.add("session_id", getAuthToken()).add("format", "json");
+			
+			for (Map.Entry<String, String> entry: x.entrySet()) {
+				fb = fb.add(entry.getKey(), entry.getValue());
+			}
 
 			Response resp = getClient().newCall(
 					new Request.Builder().url(getUrl()).post(fb.build())
@@ -370,9 +373,10 @@ public class A10ClientImpl implements A10Client {
 					"method argument must be passed");
 
 			FormEncodingBuilder fb = new FormEncodingBuilder()
-					.add("session_id", getAuthToken()).add("format", "xml")
-					.add("method", method);
-
+					.add("session_id", getAuthToken()).add("format", "xml");
+			for (Map.Entry<String, String> entry: x.entrySet()) {
+				fb = fb.add(entry.getKey(), entry.getValue());
+			}
 			Response resp = getClient().newCall(
 					new Request.Builder().url(getUrl()).post(fb.build())
 							.build()).execute();

@@ -78,6 +78,7 @@ public class A10ClientTest {
 		}
 	}
 
+
 	@Test
 	public void testRemoteException() throws IOException {
 		String json = "{\n" + "  \"response\" : {\n"
@@ -158,6 +159,31 @@ public class A10ClientTest {
 
 	}
 
+	@Test
+	public void testInvokeJson() throws InterruptedException {
+		mockServer.enqueue(new MockResponse()
+		.setBody("{\"response\": {\"status\":\"ok\"}}"));
+		testClient.invokeJson("testmethod", "abc","123","foo","bar");
+		
+		RecordedRequest rr = mockServer.takeRequest();
+		
+		Map<String,String> m = RequestUtil.parseFormBody(rr);
+		
+		Assertions.assertThat(m).containsEntry("abc", "123").containsEntry("foo", "bar").containsEntry("method", "testmethod").containsEntry("format", "json").containsKey("session_id");
+	}
+	
+	@Test
+	public void testInvokeXml() throws InterruptedException {
+		mockServer.enqueue(new MockResponse()
+		.setBody("<response status=\"ok\"><dummy/></response>"));
+		testClient.invokeXml("testmethod", "abc","123","foo","bar");
+		
+		RecordedRequest rr = mockServer.takeRequest();
+		
+		Map<String,String> m = RequestUtil.parseFormBody(rr);
+		
+		Assertions.assertThat(m).containsEntry("abc", "123").containsEntry("foo", "bar").containsEntry("method", "testmethod").containsEntry("format", "xml").containsKey("session_id");
+	}
 	@Test
 	public void serverNotConfiguredForHAShouldBeActive()
 			throws InterruptedException {
