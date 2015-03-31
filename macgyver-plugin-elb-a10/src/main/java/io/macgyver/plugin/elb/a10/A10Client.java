@@ -21,13 +21,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface A10Client {
 
-	public abstract ObjectNode getServiceGroupAll();
-
-	public abstract ObjectNode getSystemPerformance();
-
-	public abstract ObjectNode getSystemInfo();
-
-	public abstract ObjectNode getDeviceInfo();
 
 	@Deprecated
 	public abstract ObjectNode invoke(String method, Map<String, String> params);

@@ -15,9 +15,12 @@ package io.macgyver.plugin.elb.a10;
 
 import io.macgyver.test.MacGyverIntegrationTest;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
+import org.jdom2.Element;
+import org.jdom2.output.XMLOutputter;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -74,12 +77,6 @@ public class A10ClientIntegrationTest extends MacGyverIntegrationTest {
 		}
 	}
 
-	@Test
-	public void testDeviceInfo() {
-		
-		ObjectNode n = client.getDeviceInfo();
-		Assertions.assertThat(n).isNotNull();
-	}
 
 	@Test
 	public void testTokenCache() {
@@ -103,22 +100,11 @@ public class A10ClientIntegrationTest extends MacGyverIntegrationTest {
 
 	}
 
-	@Test
-	public void testX() {
-		client.getSystemInfo();
-	}
 
-	@Test
-	public void testSystemPerf() {
-		client.getSystemPerformance();
 
-	}
 
-	@Test
-	public void testSLB() {
 
-		ObjectNode slb = client.getServiceGroupAll();
-		logger.info("getServiceGroupAll: {}", slb);
-	}
+
+
 
 }

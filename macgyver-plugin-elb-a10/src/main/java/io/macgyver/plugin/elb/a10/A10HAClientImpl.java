@@ -157,26 +157,6 @@ public class A10HAClientImpl implements A10Client, Runnable {
 		throw new ElbException("active A10 not found in (" + clients + ")");
 	}
 
-	@Override
-	public ObjectNode getServiceGroupAll() {
-		return getActiveClient().getServiceGroupAll();
-	}
-
-	@Override
-	public ObjectNode getSystemPerformance() {
-		return getActiveClient().getSystemPerformance();
-	}
-
-	@Override
-	public ObjectNode getSystemInfo() {
-		return getActiveClient().getSystemInfo();
-	}
-
-	@Override
-	public ObjectNode getDeviceInfo() {
-		return getActiveClient().getDeviceInfo();
-	}
-
 	@Deprecated
 	public ObjectNode invoke(String method, Map<String, String> params) {
 		return invokeJson(method, params);
