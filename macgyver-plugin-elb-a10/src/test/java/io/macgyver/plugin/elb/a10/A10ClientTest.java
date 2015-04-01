@@ -18,11 +18,14 @@ import io.macgyver.core.LoggingConfig;
 import io.macgyver.test.RequestUtil;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -192,26 +195,37 @@ public class A10ClientTest {
 		Assertions.assertThat(m).containsEntry("abc", "123").containsEntry("foo", "bar").containsEntry("method", "testmethod").containsEntry("format", "json").containsKey("session_id");
 	}
 	
-	@Test
-	public void testInvokeXmlWithBody() throws InterruptedException { 
-		mockServer.enqueue(new MockResponse()
-		.setBody("{\"response\": {\"status\":\"ok\"}}"));	
-		
-		/*Element xml = new Element("test");
+	
+	public Element createXml() throws IOException { 
+		Element xml = new Element("test");
 		xml = xml.setAttribute("def","456").setAttribute("hello","world").setText("testXml");
+		Element firstNumber = new Element("number");
+		Element secondNumber = new Element("number");
+		firstNumber.setText("3");
+		secondNumber.setText("5");
+		xml.addContent(firstNumber);
+		xml.addContent(secondNumber);
 		
-		System.out.println("xml: " +xml);
+		return xml;
+		
+	}
+	
+	@Test
+	public void testInvokeXmlWithBody() throws InterruptedException, IOException { 
+		mockServer.enqueue(new MockResponse()
+		.setBody("<response status=\"ok\"><dummy/></response>"));	
+		
+		Element xml = createXml();
 		
 		testClient.invokeXml("testmethod", xml, "abc","123","foo","bar");
 		
 		RecordedRequest rr = mockServer.takeRequest();
 		
 		String path = rr.getPath();
-		Assertions.assertThat(path).contains("format=json").contains("abc=123").contains("foo=bar").contains("method=testmethod").contains("session_id");
+		Assertions.assertThat(path).contains("format=xml").contains("abc=123").contains("foo=bar").contains("method=testmethod").contains("session_id");
 		
 		String requestBody = new String(rr.getBody()); 
-		System.out.println("request body:  " + requestBody);
-		Assertions.assertThat(requestBody).isEmpty();*/
+		Assertions.assertThat(requestBody).isEqualTo(new XMLOutputter(Format.getRawFormat()).outputString(xml));
 		
 	}
 	

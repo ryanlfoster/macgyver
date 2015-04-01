@@ -39,6 +39,8 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -383,10 +385,11 @@ public class A10ClientImpl implements A10Client {
 				String bodyAsString = optionalBody.toString();
 								
 				final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-	
 				resp = getClient().newCall(
 						new Request.Builder().url(url).post(
+								
 								RequestBody.create(JSON,bodyAsString))
+									.header("Content-Type", "application/json")
 									.build()).execute();
 			}
 
@@ -420,12 +423,14 @@ public class A10ClientImpl implements A10Client {
 						new Request.Builder().url(getUrl()).post(fb.build())
 							.build()).execute();
 			} else { 
-				String bodyAsString = optionalBody.toString();
+				
+				String bodyAsString = new XMLOutputter(Format.getRawFormat()).outputString(optionalBody);
 				final MediaType XML = MediaType.parse("text/xml");
 
 				resp = getClient().newCall(
 						new Request.Builder().url(url).post(
 								RequestBody.create(XML, bodyAsString))
+									.header("Content-Type", "text/xml")
 									.build()).execute();
 			}
 	
