@@ -61,8 +61,10 @@ import com.google.common.collect.Maps;
 import com.squareup.okhttp.ConnectionSpec;
 import com.squareup.okhttp.ConnectionSpec.Builder;
 import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.TlsVersion;
 
@@ -263,7 +265,7 @@ public class A10ClientImpl implements A10Client {
 	}
 	@Override
 	public ObjectNode invokeJson(String method, JsonNode body, String... args) {
-		return invokeJson(method, toMap(args));
+		return invokeJson(method, body, toMap(args));
 	}
 
 	@Override
@@ -356,25 +358,37 @@ public class A10ClientImpl implements A10Client {
 
 	protected ObjectNode invokeJson(Map<String, String> x, JsonNode optionalBody) {
 
-		if (optionalBody!=null) {
-			throw new UnsupportedOperationException("POST operations with JSON body not yet supported");
-		}
 		try {
 
 			String method = x.get("method");
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(method),
 					"method argument must be passed");
-
-			FormEncodingBuilder fb = new FormEncodingBuilder()
-					.add("session_id", getAuthToken()).add("format", "json");
 			
-			for (Map.Entry<String, String> entry: x.entrySet()) {
-				fb = fb.add(entry.getKey(), entry.getValue());
-			}
+			Response resp;
+			
+			if (optionalBody==null) {
+				FormEncodingBuilder fb = new FormEncodingBuilder()
+					.add("session_id", getAuthToken()).add("format", "json");
+		
+				for (Map.Entry<String, String> entry: x.entrySet()) {
+					fb = fb.add(entry.getKey(), entry.getValue());
+				}
 
-			Response resp = getClient().newCall(
-					new Request.Builder().url(getUrl()).post(fb.build())
-							.build()).execute();
+				resp = getClient().newCall(
+				new Request.Builder().url(getUrl()).post(fb.build())
+						.build()).execute();
+			} else {
+				
+				String url = formatUrl(x,"json");
+				String bodyAsString = optionalBody.toString();
+								
+				final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+	
+				resp = getClient().newCall(
+						new Request.Builder().url(url).post(
+								RequestBody.create(JSON,bodyAsString))
+									.build()).execute();
+			}
 
 			return parseJsonResponse(resp, method);
 
@@ -386,24 +400,35 @@ public class A10ClientImpl implements A10Client {
 
 	protected Element invokeXml(Map<String, String> x, Element optionalBody) {
 
-		if (optionalBody!=null) {
-			throw new UnsupportedOperationException("POST operations with XML body not yet supported");
-		}
 		try {
 
 			String method = x.get("method");
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(method),
 					"method argument must be passed");
-
-			FormEncodingBuilder fb = new FormEncodingBuilder()
-					.add("session_id", getAuthToken()).add("format", "xml");
-			for (Map.Entry<String, String> entry: x.entrySet()) {
-				fb = fb.add(entry.getKey(), entry.getValue());
-			}
-			Response resp = getClient().newCall(
-					new Request.Builder().url(getUrl()).post(fb.build())
+			
+			String url = formatUrl(x,"xml");
+			
+			Response resp;
+			
+			if (optionalBody==null) { 
+				FormEncodingBuilder fb = new FormEncodingBuilder()
+				.add("session_id", getAuthToken()).add("format", "xml");
+				for (Map.Entry<String, String> entry: x.entrySet()) {
+					fb = fb.add(entry.getKey(), entry.getValue());
+				}
+				resp = getClient().newCall(
+						new Request.Builder().url(getUrl()).post(fb.build())
 							.build()).execute();
+			} else { 
+				String bodyAsString = optionalBody.toString();
+				final MediaType XML = MediaType.parse("text/xml");
 
+				resp = getClient().newCall(
+						new Request.Builder().url(url).post(
+								RequestBody.create(XML, bodyAsString))
+									.build()).execute();
+			}
+	
 			Element element = parseXmlResponse(resp, method);
 			throwExceptionIfNecessary(element);
 			return element;
@@ -531,6 +556,17 @@ public class A10ClientImpl implements A10Client {
 
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("url", url).toString();
+	}
+	
+	protected String formatUrl(Map<String,String> x, String format) { 
+		String url = getUrl() + "?session_id=" + getAuthToken() + "&format=" + format;
+		
+		for (String key : x.keySet()) { 
+			String val = x.get(key); 
+			url += "&" + key + "=" + val;
+		}
+		
+		return url;
 	}
 
 	protected String normalizeUrl(String url) {

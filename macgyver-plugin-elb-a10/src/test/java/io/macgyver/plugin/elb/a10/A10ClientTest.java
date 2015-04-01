@@ -29,6 +29,8 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 import com.squareup.okhttp.mockwebserver.rule.MockWebServerRule;
@@ -160,7 +162,25 @@ public class A10ClientTest {
 	}
 
 	@Test
-	public void testInvokeJson() throws InterruptedException {
+	public void testInvokeJsonWithBody() throws InterruptedException {
+		mockServer.enqueue(new MockResponse()
+		.setBody("{\"response\": {\"status\":\"ok\"}}"));
+		
+		JsonNode json = new ObjectMapper().createObjectNode().put("def", "456").put("hello", "world");
+				
+		testClient.invokeJson("testmethod", json, "abc","123","foo","bar");
+		
+		RecordedRequest rr = mockServer.takeRequest();
+		
+		String path = rr.getPath();
+		Assertions.assertThat(path).contains("format=json").contains("abc=123").contains("foo=bar").contains("method=testmethod").contains("session_id");
+		
+		String requestBody = new String(rr.getBody()); 
+		Assertions.assertThat(requestBody).isEqualTo(json.toString()); 
+	}
+	
+	@Test
+	public void testInvokeJsonNoBody() throws InterruptedException {
 		mockServer.enqueue(new MockResponse()
 		.setBody("{\"response\": {\"status\":\"ok\"}}"));
 		testClient.invokeJson("testmethod", "abc","123","foo","bar");
@@ -173,7 +193,30 @@ public class A10ClientTest {
 	}
 	
 	@Test
-	public void testInvokeXml() throws InterruptedException {
+	public void testInvokeXmlWithBody() throws InterruptedException { 
+		mockServer.enqueue(new MockResponse()
+		.setBody("{\"response\": {\"status\":\"ok\"}}"));	
+		
+		/*Element xml = new Element("test");
+		xml = xml.setAttribute("def","456").setAttribute("hello","world").setText("testXml");
+		
+		System.out.println("xml: " +xml);
+		
+		testClient.invokeXml("testmethod", xml, "abc","123","foo","bar");
+		
+		RecordedRequest rr = mockServer.takeRequest();
+		
+		String path = rr.getPath();
+		Assertions.assertThat(path).contains("format=json").contains("abc=123").contains("foo=bar").contains("method=testmethod").contains("session_id");
+		
+		String requestBody = new String(rr.getBody()); 
+		System.out.println("request body:  " + requestBody);
+		Assertions.assertThat(requestBody).isEmpty();*/
+		
+	}
+	
+	@Test
+	public void testInvokeXmlNoBody() throws InterruptedException {
 		mockServer.enqueue(new MockResponse()
 		.setBody("<response status=\"ok\"><dummy/></response>"));
 		testClient.invokeXml("testmethod", "abc","123","foo","bar");
