@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.jdom2.Element;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface A10Client {
@@ -28,14 +29,22 @@ public interface A10Client {
 	@Deprecated
 	public abstract ObjectNode invoke(String method, String... args);
 	
-	public abstract ObjectNode invokeJson(String method, Map<String, String> params);
+	public abstract ObjectNode invokeJson(String method, JsonNode body, Map<String, String> params);
 
+	public abstract ObjectNode invokeJson(String method, Map<String, String> params);
+	
+	public abstract ObjectNode invokeJson(String method, JsonNode body, String... args);
+	
 	public abstract ObjectNode invokeJson(String method, String... args);
+	
+	public abstract Element invokeXml(String method, Element body, String... args);
 	
 	public abstract Element invokeXml(String method, String... args);
 	
-	public abstract Element invokeXml(String method, Map<String,String>  args);
+	public abstract Element invokeXml(String method, Element body, Map<String,String>  args);
 
+	public abstract Element invokeXml(String method, Map<String,String>  args);
+	
 	public boolean isActive();
 	
 }

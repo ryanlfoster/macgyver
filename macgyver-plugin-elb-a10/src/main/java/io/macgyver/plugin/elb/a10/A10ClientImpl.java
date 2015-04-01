@@ -45,6 +45,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -257,13 +258,21 @@ public class A10ClientImpl implements A10Client {
 	}
 
 	@Override
-	public ObjectNode invokeJson(String method, String... args) {
-		return invoke(method, toMap(args));
+	public ObjectNode invokeJson(String method,  String... args) {
+		return invokeJson(method, null, toMap(args));
+	}
+	@Override
+	public ObjectNode invokeJson(String method, JsonNode body, String... args) {
+		return invokeJson(method, toMap(args));
 	}
 
 	@Override
+	public Element invokeXml(String method, Element body, String... args) {
+		return invokeXml(method, body, toMap(args));
+	}
+	@Override
 	public Element invokeXml(String method, String... args) {
-		return invokeXml(method, toMap(args));
+		return invokeXml(method, null, toMap(args));
 	}
 
 	@Deprecated
@@ -272,24 +281,32 @@ public class A10ClientImpl implements A10Client {
 	}
 
 	public ObjectNode invokeJson(String method, Map<String, String> params) {
+		return invokeJson(method,null,params);
+	}
+	public ObjectNode invokeJson(String method, JsonNode body, Map<String, String> params) {
 		if (params == null) {
 			params = Maps.newConcurrentMap();
 		}
 		Map<String, String> copy = Maps.newHashMap(params);
 		copy.put("method", method);
 
-		return invoke(copy);
+		return invokeJson(copy, body);
 	}
 
 	@Override
 	public Element invokeXml(String method, Map<String, String> params) {
+		
+		return invokeXml(method,null,params);
+	}
+	@Override
+	public Element invokeXml(String method, Element body, Map<String, String> params) {
 		if (params == null) {
 			params = Maps.newConcurrentMap();
 		}
 		Map<String, String> copy = Maps.newHashMap(params);
 		copy.put("method", method);
 
-		return invokeXml(copy);
+		return invokeXml(copy, body);
 	}
 
 	
@@ -337,8 +354,11 @@ public class A10ClientImpl implements A10Client {
 		}
 	}
 
-	protected ObjectNode invoke(Map<String, String> x) {
+	protected ObjectNode invokeJson(Map<String, String> x, JsonNode optionalBody) {
 
+		if (optionalBody!=null) {
+			throw new UnsupportedOperationException("POST operations with JSON body not yet supported");
+		}
 		try {
 
 			String method = x.get("method");
@@ -364,8 +384,11 @@ public class A10ClientImpl implements A10Client {
 
 	}
 
-	protected Element invokeXml(Map<String, String> x) {
+	protected Element invokeXml(Map<String, String> x, Element optionalBody) {
 
+		if (optionalBody!=null) {
+			throw new UnsupportedOperationException("POST operations with XML body not yet supported");
+		}
 		try {
 
 			String method = x.get("method");

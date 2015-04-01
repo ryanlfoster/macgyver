@@ -26,6 +26,7 @@ import org.jdom2.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -201,6 +202,28 @@ public class A10HAClientImpl implements A10Client, Runnable {
 		} catch (Exception e) {
 			logger.warn("", e);
 		}
+	}
+
+	@Override
+	public ObjectNode invokeJson(String method, JsonNode body,
+			Map<String, String> params) {
+		return getActiveClient().invokeJson(method, body, params);
+	}
+
+	@Override
+	public ObjectNode invokeJson(String method, JsonNode body, String... args) {
+		return getActiveClient().invokeJson(method,body, args);
+	}
+
+	@Override
+	public Element invokeXml(String method, Element body, String... args) {
+		return getActiveClient().invokeXml(method,body,args);
+	}
+
+	@Override
+	public Element invokeXml(String method, Element body,
+			Map<String, String> args) {
+		return getActiveClient().invokeXml(method, body,args);
 	}
 
 }
