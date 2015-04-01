@@ -217,13 +217,13 @@ public class A10HAClientImpl implements A10Client, Runnable {
 
 	@Override
 	public Element invokeXml(String method, Element body, String... args) {
-		return getActiveClient().invokeXml(method,body,args);
+		return getActiveClient().invokeXml(method,body, args);
 	}
 
 	@Override
 	public Element invokeXml(String method, Element body,
-			Map<String, String> args) {
-		return getActiveClient().invokeXml(method, body,args);
+			Map<String, String> params) {
+		return getActiveClient().invokeXml(method, body, params);
 	}
 
 }
