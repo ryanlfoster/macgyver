@@ -39,12 +39,15 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
@@ -60,8 +63,10 @@ import com.google.common.collect.Maps;
 import com.squareup.okhttp.ConnectionSpec;
 import com.squareup.okhttp.ConnectionSpec.Builder;
 import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.TlsVersion;
 
@@ -257,13 +262,21 @@ public class A10ClientImpl implements A10Client {
 	}
 
 	@Override
-	public ObjectNode invokeJson(String method, String... args) {
-		return invoke(method, toMap(args));
+	public ObjectNode invokeJson(String method,  String... args) {
+		return invokeJson(method, null, toMap(args));
+	}
+	@Override
+	public ObjectNode invokeJson(String method, JsonNode body, String... args) {
+		return invokeJson(method, body, toMap(args));
 	}
 
 	@Override
+	public Element invokeXml(String method, Element body, String... args) {
+		return invokeXml(method, body, toMap(args));
+	}
+	@Override
 	public Element invokeXml(String method, String... args) {
-		return invokeXml(method, toMap(args));
+		return invokeXml(method, null, toMap(args));
 	}
 
 	@Deprecated
@@ -272,24 +285,32 @@ public class A10ClientImpl implements A10Client {
 	}
 
 	public ObjectNode invokeJson(String method, Map<String, String> params) {
+		return invokeJson(method,null,params);
+	}
+	public ObjectNode invokeJson(String method, JsonNode body, Map<String, String> params) {
 		if (params == null) {
 			params = Maps.newConcurrentMap();
 		}
 		Map<String, String> copy = Maps.newHashMap(params);
 		copy.put("method", method);
 
-		return invoke(copy);
+		return invokeJson(copy, body);
 	}
 
 	@Override
 	public Element invokeXml(String method, Map<String, String> params) {
+		
+		return invokeXml(method,null,params);
+	}
+	@Override
+	public Element invokeXml(String method, Element body, Map<String, String> params) {
 		if (params == null) {
 			params = Maps.newConcurrentMap();
 		}
 		Map<String, String> copy = Maps.newHashMap(params);
 		copy.put("method", method);
 
-		return invokeXml(copy);
+		return invokeXml(copy, body);
 	}
 
 	
@@ -337,24 +358,40 @@ public class A10ClientImpl implements A10Client {
 		}
 	}
 
-	protected ObjectNode invoke(Map<String, String> x) {
+	protected ObjectNode invokeJson(Map<String, String> x, JsonNode optionalBody) {
 
 		try {
 
 			String method = x.get("method");
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(method),
 					"method argument must be passed");
-
-			FormEncodingBuilder fb = new FormEncodingBuilder()
-					.add("session_id", getAuthToken()).add("format", "json");
 			
-			for (Map.Entry<String, String> entry: x.entrySet()) {
-				fb = fb.add(entry.getKey(), entry.getValue());
-			}
+			Response resp;
+			
+			if (optionalBody==null) {
+				FormEncodingBuilder fb = new FormEncodingBuilder()
+					.add("session_id", getAuthToken()).add("format", "json");
+		
+				for (Map.Entry<String, String> entry: x.entrySet()) {
+					fb = fb.add(entry.getKey(), entry.getValue());
+				}
 
-			Response resp = getClient().newCall(
-					new Request.Builder().url(getUrl()).post(fb.build())
-							.build()).execute();
+				resp = getClient().newCall(
+				new Request.Builder().url(getUrl()).post(fb.build())
+						.build()).execute();
+			} else {
+				
+				String url = formatUrl(x,"json");
+				String bodyAsString = optionalBody.toString();
+								
+				final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+				resp = getClient().newCall(
+						new Request.Builder().url(url).post(
+								
+								RequestBody.create(JSON,bodyAsString))
+									.header("Content-Type", "application/json")
+									.build()).execute();
+			}
 
 			return parseJsonResponse(resp, method);
 
@@ -364,23 +401,39 @@ public class A10ClientImpl implements A10Client {
 
 	}
 
-	protected Element invokeXml(Map<String, String> x) {
+	protected Element invokeXml(Map<String, String> x, Element optionalBody) {
 
 		try {
 
 			String method = x.get("method");
 			Preconditions.checkArgument(!Strings.isNullOrEmpty(method),
 					"method argument must be passed");
-
-			FormEncodingBuilder fb = new FormEncodingBuilder()
-					.add("session_id", getAuthToken()).add("format", "xml");
-			for (Map.Entry<String, String> entry: x.entrySet()) {
-				fb = fb.add(entry.getKey(), entry.getValue());
-			}
-			Response resp = getClient().newCall(
-					new Request.Builder().url(getUrl()).post(fb.build())
+			
+			String url = formatUrl(x,"xml");
+			
+			Response resp;
+			
+			if (optionalBody==null) { 
+				FormEncodingBuilder fb = new FormEncodingBuilder()
+				.add("session_id", getAuthToken()).add("format", "xml");
+				for (Map.Entry<String, String> entry: x.entrySet()) {
+					fb = fb.add(entry.getKey(), entry.getValue());
+				}
+				resp = getClient().newCall(
+						new Request.Builder().url(getUrl()).post(fb.build())
 							.build()).execute();
+			} else { 
+				
+				String bodyAsString = new XMLOutputter(Format.getRawFormat()).outputString(optionalBody);
+				final MediaType XML = MediaType.parse("text/xml");
 
+				resp = getClient().newCall(
+						new Request.Builder().url(url).post(
+								RequestBody.create(XML, bodyAsString))
+									.header("Content-Type", "text/xml")
+									.build()).execute();
+			}
+	
 			Element element = parseXmlResponse(resp, method);
 			throwExceptionIfNecessary(element);
 			return element;
@@ -508,6 +561,17 @@ public class A10ClientImpl implements A10Client {
 
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("url", url).toString();
+	}
+	
+	protected String formatUrl(Map<String,String> x, String format) { 
+		String url = getUrl() + "?session_id=" + getAuthToken() + "&format=" + format;
+		
+		for (String key : x.keySet()) { 
+			String val = x.get(key); 
+			url += "&" + key + "=" + val;
+		}
+		
+		return url;
 	}
 
 	protected String normalizeUrl(String url) {
